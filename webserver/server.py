@@ -61,8 +61,9 @@ def add():
   lastname = request.form['lastname']
   email = request.form['email']
   password = request.form['password']
-
-    uid = g.conn.execute("select max(user_id)+1 from person")
+  
+    record = g.conn.execute("select max(user_id)+1 from person")
+    uid=record.fetchone()
     cmd = 'INSERT INTO test VALUES (:username1, :uid1, :firstname1, :lastname1, :email1, :password1)'
     g.conn.execute(text(cmd), username1=username,uid1=uid, firstname1=firstname,lastname1=lastname,email1=email, password1=password)
     return redirect('/signupsuccessfully')
