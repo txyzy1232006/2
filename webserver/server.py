@@ -61,14 +61,17 @@ def add():
   lastname = request.form['last_name']
   email = request.form['email']
   password = request.form['password']
-  uname=g.conn.execute("select max(user_id)+1 from person").fetchall()
-  if username in uname:
+  cursor = g.conn.execute("SELECT name FROM test")
+  allnames = []
+  for result in cursor:
+    allnames.append(result[0])  # can also be accessed using result[0]
+  cursor.close()
+  if username in allnames:
     return redirect('/signinerror')
   else:
     #new user_id
     record = g.conn.execute("select max(user_id)+1 from person").fetchone()
     uid=record[0]
-    record.colse()
     #new user_id end
     cmd = 'INSERT INTO person VALUES (:username1, :uid1, :firstname1, :lastname1, :email1, :password1)';
     g.conn.execute(text(cmd), username1=username,uid1=uid, firstname1=firstname,lastname1=lastname,email1=email, password1=password);
