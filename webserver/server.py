@@ -50,28 +50,35 @@ def signup():
 #sign in error
 @app.route('/signinerror')
 def signinerror():
-  return render_termplate("signinerror.html")
+  return render_template("signinerror.html")
 
 
 #add user
 @app.route('/signup/add',methods=['POST'])
 def add():
   username = request.form['username']
-  firstname = request.form['firstname']
-  lastname = request.form['lastname']
+  firstname = request.form['first_name']
+  lastname = request.form['last_name']
   email = request.form['email']
   password = request.form['password']
-  record = g.conn.execute("select max(user_id)+1 from person")
-  uid=record.fetchone()
-  cmd = 'INSERT INTO test VALUES (:username1, :uid1, :firstname1, :lastname1, :email1, :password1)'
-  g.conn.execute(text(cmd), username1=username,uid1=uid, firstname1=firstname,lastname1=lastname,email1=email, password1=password)
-  return redirect('/signupsuccessfully')
+  uname=g.conn.execute("select max(user_id)+1 from person").fetchall()
+  if username in uname:
+    return redirect('/signinerror')
+  else:
+    #new user_id
+    record = g.conn.execute("select max(user_id)+1 from person").fetchone()
+    uid=record[0]
+    record.colse()
+    #new user_id end
+    cmd = 'INSERT INTO person VALUES (:username1, :uid1, :firstname1, :lastname1, :email1, :password1)';
+    g.conn.execute(text(cmd), username1=username,uid1=uid, firstname1=firstname,lastname1=lastname,email1=email, password1=password);
+    return redirect('/signupsuccessfully')
 
 
 #sign up successfully
 @app.route('/signupsuccessfully')
 def sus():
-  return render_termplate("sus.html")
+  return render_template("sus.html")
 
 
 #employer
