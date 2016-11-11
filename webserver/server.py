@@ -62,6 +62,7 @@ def add():
   email = request.form['email']
   password = request.form['password']
   cursor = g.conn.execute("SELECT name FROM test")
+  #username exists
   allnames = []
   for result in cursor:
     allnames.append(result[0])  # can also be accessed using result[0]
