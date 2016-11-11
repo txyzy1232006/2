@@ -8,14 +8,15 @@ app = Flask(__name__, template_folder=tmpl_dir)
 
 # XXX: The URI should be in the format of: 
 #
-#     postgresql://USER:PASSWORD@<IP_OF_POSTGRE_SQL_SERVER>/postgres
+#     postgresql://zy2232:4ayq7@104.196.175.120/postgres
 #
 # For example, if you had username ewu2493, password foobar, then the following line would be:
 #
 #     DATABASEURI = "postgresql://ewu2493:foobar@<IP_OF_POSTGRE_SQL_SERVER>/postgres"
-DATABASEURI = "sqlite:///test.db"
+DATABASEURI = "postgresql://zy2232:4ayq7@104.196.175.120/postgres"
 # This line creates a database engine that knows how to connect to the URI above
 engine = create_engine(DATABASEURI)
+
 
 @app.before_request
 def before_request():
