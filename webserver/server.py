@@ -37,12 +37,21 @@ def teardown_request(exception):
 # @app.route is a decorator around index() that means:
 #   run index() whenever the user tries to access the "/" path using a GET request
 @app.route('/')
-def index():pass
+def index():
+  return render_template("index.html")
 
 
 #sign up
 @app.route('/signup')
-def signup():pass
+def signup():
+  return render_template("signup.html")
+
+
+#sign in error
+@app.route('/signinerror')
+def signinerror():
+  return render_termplate("signinerror.html")
+
 
 #add user
 @app.add('/signup/add')
