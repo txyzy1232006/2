@@ -61,16 +61,7 @@ def add():
   lastname = request.form['lastname']
   email = request.form['email']
   password = request.form['password']
-  #username in table
-  cursor = g.conn.execute("select username from person")
-  unames = []
-  for result in cursor:
-    unames.append(result[0])  # can also be accessed using result[0]
-  cursor.close()
-  #end username
-  if username in unames:
-    return redirect('/signuperror')
-  else:
+
     uid = g.conn.execute("select max(user_id)+1 from person")
     cmd = 'INSERT INTO test VALUES (:username1, :uid1, :firstname1, :lastname1, :email1, :password1)'
     g.conn.execute(text(cmd), username1=username,uid1=uid, firstname1=firstname,lastname1=lastname,email1=email, password1=password)
