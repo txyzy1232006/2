@@ -135,17 +135,17 @@ def resume_update(username):pass
           
            
 #search job
-@app.route('jobseeker/<username>/search')
+@app.route('/jobseeker/<username>/search')
 def search_j(username):pass
            
            
 #apply job
-@app.route('jobseeker/<username>/applyjob')
+@app.route('/jobseeker/<username>/applyjob')
 def apply_job(username):pass
            
            
 #view job apply and interview for jobseeker
-@app.route('jobseeker/<username>/status')
+@app.route('/jobseeker/<username>/status')
 def apply(username):pass
            
 
