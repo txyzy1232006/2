@@ -54,7 +54,7 @@ def signinerror():
 
 
 #add user
-@app.add('/signup/add',methods=['POST'])
+@app.route('/signup/add',methods=['POST'])
 def add():
   username = request.form['username']
   firstname = request.form['firstname']
