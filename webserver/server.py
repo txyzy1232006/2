@@ -61,16 +61,15 @@ def add():
   lastname = request.form['lastname']
   email = request.form['email']
   password = request.form['password']
-  
-    record = g.conn.execute("select max(user_id)+1 from person")
-    uid=record.fetchone()
-    cmd = 'INSERT INTO test VALUES (:username1, :uid1, :firstname1, :lastname1, :email1, :password1)'
-    g.conn.execute(text(cmd), username1=username,uid1=uid, firstname1=firstname,lastname1=lastname,email1=email, password1=password)
-    return redirect('/signupsuccessfully')
+  record = g.conn.execute("select max(user_id)+1 from person")
+  uid=record.fetchone()
+  cmd = 'INSERT INTO test VALUES (:username1, :uid1, :firstname1, :lastname1, :email1, :password1)'
+  g.conn.execute(text(cmd), username1=username,uid1=uid, firstname1=firstname,lastname1=lastname,email1=email, password1=password)
+  return redirect('/signupsuccessfully')
 
 
 #sign up successfully
-@@app.route('/signupsuccessfully')
+@app.route('/signupsuccessfully')
 def sus():
   return render_termplate("sus.html")
 
@@ -92,8 +91,8 @@ def list(username):pass
 def add_f(username):pass
 
 #delete friend
-@app.route('/friendlist/<username>/delete)
-def delete_f
+@app.route('/friendlist/<username>/delete')
+def delete_f(username):pass
            
 #update employer profile
 @app.route('/employer/<username>/update')
@@ -106,7 +105,7 @@ def update_j(username):pass
            
            
 #jobs of an employer
-@app.route('/employer/<username>/job)
+@app.route('/employer/<username>/job')
 def job_posted(username):pass
            
        
@@ -121,7 +120,7 @@ def delete_j(username):pass
 
 
 #all jobs for employer
-@app.route('/job)
+@app.route('/job')
 def job():pass
            
 
