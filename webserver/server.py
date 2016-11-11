@@ -54,13 +54,33 @@ def signinerror():
 
 
 #add user
-@app.add('/signup/add')
-def add():pass
+@app.add('/signup/add',methods=['POST'])
+def add():
+  username = request.form['username']
+  firstname = request.form['firstname']
+  lastname = request.form['lastname']
+  email = request.form['email']
+  password = request.form['password']
+  #username in table
+  cursor = g.conn.execute("select username from person")
+  unames = []
+  for result in cursor:
+    unames.append(result[0])  # can also be accessed using result[0]
+  cursor.close()
+  #end username
+  if username in unames:
+    return redirect('/signuperror')
+  else:
+    uid = g.conn.execute("select max(user_id)+1 from person")
+    cmd = 'INSERT INTO test VALUES (:username1, :uid1, :firstname1, :lastname1, :email1, :password1)'
+    g.conn.execute(text(cmd), username1=username,uid1=uid, firstname1=firstname,lastname1=lastname,email1=email, password1=password)
+    return redirect('/signupsuccessfully')
 
 
 #sign up successfully
 @@app.route('/signupsuccessfully')
-def sus():pass
+def sus():
+  return render_termplate("sus.html")
 
 
 #employer
