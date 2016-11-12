@@ -61,22 +61,36 @@ def add():
   lastname = request.form['last_name']
   email = request.form['email']
   password = request.form['password']
-  cursor = g.conn.execute("SELECT name FROM test")
   #username exists
+  cursor = g.conn.execute("SELECT username FROM person")
   allnames = []
   for result in cursor:
     allnames.append(result[0])  # can also be accessed using result[0]
   cursor.close()
+  #username exists end
+  #
+  #email exists
+  cursor1 = g.conn.execute("SELECT email FROM person")
+  allemails=[]
+  for result in cursor1:
+  allemails.append(result[0])  # can also be accessed using result[0]
+  cursor1.close()
+  #email exists end
   if username in allnames:
     return redirect('/signinerror')
   else:
-    #new user_id
-    record = g.conn.execute("select max(user_id)+1 from person").fetchone()
-    uid=record[0]
-    #new user_id end
-    cmd = 'INSERT INTO person VALUES (:username1, :uid1, :firstname1, :lastname1, :email1, :password1)';
-    g.conn.execute(text(cmd), username1=username,uid1=uid, firstname1=firstname,lastname1=lastname,email1=email, password1=password);
-    return redirect('/signupsuccessfully')
+    if email in allemails:
+      return redirect('/signinerror')
+    else:
+      #new user_id
+      record1 = g.conn.execute("select max(user_id)+1 from person")
+      record=record1.fetchone()
+      uid=record[0]
+      record1.close()
+      #new user_id end
+      cmd = 'INSERT INTO person VALUES (:username1, :uid1, :firstname1, :lastname1, :email1, :password1)';
+      g.conn.execute(text(cmd), username1=username,uid1=uid, firstname1=firstname,lastname1=lastname,email1=email, password1=password);
+      return redirect('/signupsuccessfully')
 
 
 #sign up successfully
