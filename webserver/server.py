@@ -40,6 +40,17 @@ def teardown_request(exception):
 def index():
   return render_template("index.html")
 
+
+#sign in
+@app.route('/sigin',methods=['POST'])
+def sign():
+  username = request.form['username']
+  password = request.form['password']
+  t = request.form['name']
+  
+  
+
+
 #sign in error
 @app.route('/signinerror')
 def signinerror():
@@ -103,7 +114,8 @@ def signuperror():
 
 #employer
 @app.route('/employer/<username>')
-def profile_e(username): pass
+def profile_e(username): 
+  
 
 #jobseeker
 @app.route('/jobseeker/<username>')
