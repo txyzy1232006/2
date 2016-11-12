@@ -47,13 +47,13 @@ def sign():
   username = request.form['username']
   password = request.form['password']
   t=request.form['name']
-  record=g.conn.execute('SELECT username FROM person WHERE name = %s',username)
+  record=g.conn.execute('SELECT username FROM person WHERE username = %s',username)
   print record
   if not record.fetchone():
     return redirect('/signinerror')
     record.close()
   else:
-    record=g.conn.execute('SELECT password FROM person WHERE name = %s',username)
+    record=g.conn.execute('SELECT password FROM person WHERE username = %s',username)
     print record
     p= record.fetchone()
     record.close()
