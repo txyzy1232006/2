@@ -71,9 +71,9 @@ def add():
   #
   #email exists
   cursor1 = g.conn.execute("SELECT email FROM person")
-  allemails=[]
-  for result in cursor1:
-  allemails.append(result[0])  # can also be accessed using result[0]
+  allemails = []
+  for result in cursor1: 
+    allemails.append(result[0])  # can also be accessed using result[0]
   cursor1.close()
   #email exists end
   if username in allnames:
@@ -98,6 +98,10 @@ def add():
 def sus():
   return render_template("sus.html")
 
+#sign up error
+@app.route('/signuperror')
+def signuperror():
+  return render_template("signuperror.html")
 
 #employer
 @app.route('/employer/<username>')
