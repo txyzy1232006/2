@@ -49,7 +49,6 @@ def sign():
   t=request.form['name']
   record=g.conn.execute('SELECT username FROM person WHERE name = %s',(username,))
   if not record.fetchone():
-    #raise loginError(u'错误的用户名或者密码!')
     return redirect('/signinerror')
     record.close()
   else:
