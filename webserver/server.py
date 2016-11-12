@@ -126,7 +126,7 @@ def signuperror():
 
 #employer
 @app.route('/employer/<username>')
-def profile_e(username): 
+def profile_e(username): pass
   
 
 #jobseeker
