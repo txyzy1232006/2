@@ -42,23 +42,23 @@ def index():
 
 
 #sign in
-@app.route('/sigin',methods=['POST'])
+@app.route('/signin',methods=['POST'])
 def sign():
   username = request.form['username']
   password = request.form['password']
   t=request.form['name']
-  record=g.conn.execute('SELECT username FROM person WHERE name = %s',(username,))
+  record=g.conn.execute('SELECT username FROM person WHERE name = %s',username)
   if not record.fetchone():
     return redirect('/signinerror')
     record.close()
   else:
-    record=g.conn.execute('SELECT password FROM person WHERE name = %s',(username,))
+    record=g.conn.execute('SELECT password FROM person WHERE name = %s',username)
     p= record.fetchone()
     if p[0] == password:
       if t =='employer':
-        return redirect('/employer/<username>')
+        return redirect('/employer/%s',username)
       else:
-        return redirect('/jobseeker/<username>')      
+        return redirect('/jobseeker/%s',username)      
     else: 
       return redirect('/signinerror')
 
