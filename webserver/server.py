@@ -57,9 +57,9 @@ def sign():
     p= record.fetchone()
     if p[0] == password:
       if t =='employer':
-        return redirect('/employer/:username')
+        return redirect('/employer/<username>')
       else:
-        return redirect('/jobseeker/:username')      
+        return redirect('/jobseeker/<username>')      
     else: 
       return redirect('/signinerror')
 
