@@ -40,17 +40,15 @@ def teardown_request(exception):
 def index():
   return render_template("index.html")
 
+#sign in error
+@app.route('/signinerror')
+def signinerror():
+  return render_template("signinerror.html")
 
 #sign up
 @app.route('/signup')
 def signup():
   return render_template("signup.html")
-
-
-#sign in error
-@app.route('/signinerror')
-def signinerror():
-  return render_template("signinerror.html")
 
 
 #add user
