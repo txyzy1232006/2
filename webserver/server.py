@@ -60,8 +60,7 @@ def sign():
         return redirect('/employer/:username')
       else:
         return redirect('/jobseeker/:username')      
-    else:
-      raise loginError(u'错误的用户名或者密码!')  
+    else: 
       return redirect('/signinerror')
 
 
