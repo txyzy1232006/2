@@ -60,10 +60,10 @@ def sign():
     if p[0] == password:
       if t =='employer':
         return redirect('/employer/%s'% username)
-      print '/employer/%s'% username
+        print '/employer/%s'% username
       else:
         return redirect('/jobseeker/%s'% username)  
-      print '/jobseeker/%s'% username
+        print '/jobseeker/%s'% username
     else: 
       return redirect('/signinerror')
 
