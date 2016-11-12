@@ -46,9 +46,23 @@ def index():
 def sign():
   username = request.form['username']
   password = request.form['password']
-  t = request.form['name']
-  
-  
+  t=request.form['name']
+  record=g.conn.execute('SELECT username FROM person WHERE name = %s',(username,))
+  if not record.fetchone():
+    #raise loginError(u'错误的用户名或者密码!')
+    return redirect('/signinerror')
+    record.close()
+  else:
+    record=g.conn.execute('SELECT password FROM person WHERE name = %s',(username,))
+    p= record.fetchone()
+    if p[0] == password:
+      if t =='employer':
+        return redirect('/employer/:username')
+      else:
+        return redirect('/jobseeker/:username')      
+    else:
+      raise loginError(u'错误的用户名或者密码!')  
+      return redirect('/signinerror')
 
 
 #sign in error
