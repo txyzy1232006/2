@@ -15,8 +15,7 @@ app = Flask(__name__, template_folder=tmpl_dir)
 #     DATABASEURI = "postgresql://ewu2493:foobar@<IP_OF_POSTGRE_SQL_SERVER>/postgres"
 DATABASEURI = "postgresql://zy2232:4ayq7@104.196.175.120/postgres"
 # This line creates a database engine that knows how to connect to the URI above
-engine = create_engine(DATABASEURI)
-
+eengine = create_engine(DATABASEURI)
 
 @app.before_request
 def before_request():
@@ -36,19 +35,43 @@ def teardown_request(exception):
   
 # @app.route is a decorator around index() that means:
 #   run index() whenever the user tries to access the "/" path using a GET request
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
+  if request.method == 'POST':
+    username = request.form['username']
+    password = request.form['password']
+    t=request.form['name']
+    record=g.conn.execute('SELECT username FROM person WHERE name = %s',(username,))
+    if not record.fetchone():
+      #raise loginError(u'错误的用户名或者密码!')
+      return redirect('/signinerror')
+      record.close()
+    else:
+      record=g.conn.execute('SELECT password FROM person WHERE name = %s',(username,))
+      p= record.fetchone()
+      if p[0] == password:
+        if t =='employer':
+          return redirect('/employer/:username')
+        else:
+          return redirect('/jobseeker/:username')      
+      else:
+        raise loginError(u'错误的用户名或者密码!')
+        return redirect('/signinerror')
+
+   
   return render_template("index.html")
 
-#sign in error
-@app.route('/signinerror')
-def signinerror():
-  return render_template("signinerror.html")
 
 #sign up
 @app.route('/signup')
 def signup():
   return render_template("signup.html")
+
+
+#sign in error
+@app.route('/signinerror')
+def signinerror():
+  return render_template("signinerror.html")
 
 
 #add user
@@ -59,36 +82,18 @@ def add():
   lastname = request.form['last_name']
   email = request.form['email']
   password = request.form['password']
-  #username exists
-  cursor = g.conn.execute("SELECT username FROM person")
-  allnames = []
-  for result in cursor:
-    allnames.append(result[0])  # can also be accessed using result[0]
-  cursor.close()
-  #username exists end
-  #
-  #email exists
-  cursor1 = g.conn.execute("SELECT email FROM person")
-  allemails = []
-  for result in cursor1: 
-    allemails.append(result[0])  # can also be accessed using result[0]
-  cursor1.close()
-  #email exists end
-  if username in allnames:
-    return redirect('/signuperror')
+  uname=g.conn.execute("select max(user_id)+1 from person").fetchall()
+  if username in uname:
+    return redirect('/signinerror')
   else:
-    if email in allemails:
-      return redirect('/signuperror')
-    else:
-      #new user_id
-      record1 = g.conn.execute("select max(user_id)+1 from person")
-      record=record1.fetchone()
-      uid=record[0]
-      record1.close()
-      #new user_id end
-      cmd = 'INSERT INTO person VALUES (:username1, :uid1, :firstname1, :lastname1, :email1, :password1)';
-      g.conn.execute(text(cmd), username1=username,uid1=uid, firstname1=firstname,lastname1=lastname,email1=email, password1=password);
-      return redirect('/signupsuccessfully')
+    #new user_id
+    record = g.conn.execute("select max(user_id)+1 from person").fetchone()
+    uid=record[0]
+    record.colse()
+    #new user_id end
+    cmd = 'INSERT INTO person VALUES (:username1, :uid1, :firstname1, :lastname1, :email1, :password1)';
+    g.conn.execute(text(cmd), username1=username,uid1=uid, firstname1=firstname,lastname1=lastname,email1=email, password1=password);
+    return redirect('/signupsuccessfully')
 
 
 #sign up successfully
@@ -96,10 +101,6 @@ def add():
 def sus():
   return render_template("sus.html")
 
-#sign up error
-@app.route('/signuperror')
-def signuperror():
-  return render_template("signuperror.html")
 
 #employer
 @app.route('/employer/<username>')
