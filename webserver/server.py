@@ -77,10 +77,10 @@ def add():
   cursor1.close()
   #email exists end
   if username in allnames:
-    return redirect('/signinerror')
+    return redirect('/signuperror')
   else:
     if email in allemails:
-      return redirect('/signinerror')
+      return redirect('/signuperror')
     else:
       #new user_id
       record1 = g.conn.execute("select max(user_id)+1 from person")
