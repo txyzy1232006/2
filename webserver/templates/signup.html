@@ -1,0 +1,51 @@
+<html>
+  <style>
+    body{ 
+      font-size: 15pt;
+      font-family: arial;
+    }
+  </style>
+<body>
+<h1 style="color:red">Sign up</h1>
+<form method="post" action="/signup/add">
+    <table>
+	    <tr>  
+	    You are a/an<input type="radio" name="type" value="employer" checked="checked">employer <input type="radio" name="name" value="jobseeker" > jobseeker<br>
+            </tr> 
+	    <tr>
+		    <td><label for="txtname">Username：</label></td>
+            <td><input type="text" id="txtname" name="username" /></td>
+			<td>Note: username should start with letter</td>
+		</tr>
+		<tr>
+		    <td><label for="txtlname">Last name:</label></td>
+            <td><input type="text" id="txtlname" name="last_name" /></td>
+		</tr>
+		<tr>
+		    <td><label for="txtfname">First name:</label></td>
+            <td><input type="text" id="txtfname" name="first_name" /></td>
+		</tr>
+		<tr>
+		    <td><label for="txtemail">Email:</label></td>
+            <td><input type="text" id="txtemail" name="email" /></td>
+			<td>Note: email should be in form of "___@___"</td>
+		</tr>
+		<tr>
+		    <td><label for="txtpwd">Password</label></td>
+            <td><input type="text" id="txtpwd" name="password" /></td>
+		</tr>
+		<tr>
+            <td colspan=2>
+                <input type="reset"/>
+                <input type="submit"/>
+            </td>
+        </tr>
+    </table>
+</form>
+
+
+
+</body>
+
+
+</html>
