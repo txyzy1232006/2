@@ -47,7 +47,7 @@
 	</div>
     <div id="footer" style="background-color:#FFA500;clear:both;text-align:center;">
 	Want to update?
-	<a href="/employer/{{username}}/update">Click here</a>
+	<a href="/jobseeker/{{username}}/update" target="_blank">Click here</a>
 	</div>
 </div>
 
@@ -82,9 +82,9 @@
 
 
 <h2 style="color:red"> Find a job here!</h2>
-<form action="/jobseeker/{{username}}/search" method="post">
+<form action="/jobseeker/{{username}}/search" target="_blank" method="post">
     <table>
-		<tr>  
+	<tr> 
 		Type of job <input type="radio" name="type" value="full_time" > full time <input type="radio" name="type" value="part_time" checked="checked">part time<br>
         </tr>
         <tr>
