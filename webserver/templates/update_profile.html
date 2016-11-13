@@ -1,0 +1,154 @@
+<html>
+
+  <style>
+    body{ 
+      font-size: 15pt;
+      font-family: arial;
+    }
+  </style>
+
+<meta http-equiv="refresh" content="60">
+
+<body>
+
+<h1>Hello,{{username}}!</h1>
+
+
+
+
+
+
+
+<div id="profile" style="width:700px">
+
+    <div id="header" style="background-color:#FFA500;">
+
+        <h2 style="margin-bottom:0;">Your Proflie</h2>
+
+    </div>
+
+    <div id="time" style="background-color:#F5DEB3;height:30px;width:150px;float:left;text-align:center;">
+
+        <b>Update time</b>
+    </div>
+    <div id="time_content" style="background-color:#EEEEEE;height:30px;width:550px;float:left;">
+
+        {{update_time}}
+
+	</div>
+
+    <div id="birthday" style="background-color:#EEEEEE;height:30px;width:150px;float:left;text-align:center;">
+
+        <b>Birthday</b>    </div>
+
+    <div id="birthday_content" style="background-color:#F5DEB3;height:30px;width:550px;float:left;">
+
+        {{birthday}}
+
+	</div>
+
+    <div id="field" style="background-color:#F5DEB3;height:30px;width:150px;float:left;text-align:center;">
+
+        <b>Field</b>
+
+    </div>
+
+    <div id="field_content" style="background-color:#EEEEEE;height:30px;width:550px;float:left;">
+
+        {{field}}
+
+	</div>
+
+    <div id="selfintro" style="background-color:#EEEEEE;height:100px;width:150px;float:left;text-align:center;vertical-align:center">
+        <b>Personal Introduction</b>
+
+    </div>
+
+    <div id="selfintro_content" style="background-color:#F5DEB3;height:100px;width:550px;float:left;">
+
+        {{self_introduction}}
+
+	</div>
+    <div id="footer" style="background-color:#FFA500;clear:both;text-align:center;">
+
+	</div>
+ 
+</div>
+
+
+<form action="/profileupdate/<username>" method="post">
+
+    <table>
+        <tr>
+          <h2 style="color:red"> Update a profile here!</h2>
+		</tr>
+        <tr>
+
+            <td><label for="txtbirthday" >birthday</label></td>
+
+	        <td><label for="txtfield" >Field</label></td>
+		
+        <br>
+	    <td><label for="txtself" >Self introduction</label></td>
+        </tr>
+
+        <tr>
+            <td><input type="text" id="txtbirthday" name="birthday" /></td>
+
+            <td><input type="text" id="txtfield" name="Field" /></td>
+        <br>
+            <td><input type="text" style="height:100px;width:370px" id="txtself" name="Self introduction" /></td>
+
+        </tr>
+
+	<tr>
+
+            <td colspan=2>
+
+                <input type="reset" value="reset"/>
+                <input type="submit" value="search"/>
+
+            </td>
+
+        </tr>
+
+    </table>
+
+</form> 
+
+
+
+
+<br>
+
+<table width="700" border="0">
+
+  <tr>
+
+  <td colspan="2" style="background-color:#AFEEEE;text-align:center;">copyright © zy2232</td>
+
+  </tr>
+
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+
+
+
+
+
+</html>
