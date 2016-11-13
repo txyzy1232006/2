@@ -173,6 +173,22 @@ def profile_j(username):
     update_time_f=friends[1]
     friendlist=friends[2].split(',')
   return render_template("jobseeker.html",**locals())
+
+#friendlist
+@app.route('/friendlist/<username>')
+def list(username):
+  cursor=g.conn.execute("select user_id from person where username='%s';"%username)
+  uid=cursor.first()[0]
+    cursor=g.conn.execute("select * from friendlist where user_id=%s;"%uid)
+  friends=cursor.first()
+  print friends
+  if friends==None:
+    update_time_f=None
+    friendlist=None
+  else:
+    update_time_f=friends[1]
+    friendlist=friends[2].split(',')
+    return render_template("friendlist.html",**locals())
   
 
 #add friend
