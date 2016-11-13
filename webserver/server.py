@@ -258,7 +258,31 @@ def delete_f(username):
            
 #update employer profile
 @app.route('/employer/<username>/update')
-def update_e(username):pass
+def update_e(username):
+  cursor=g.conn.execute("select user_id from person where username='%s';",username)
+  uid=cursor.first()[0]
+  cur=g.conn.execute("select * from profile_update where user_id=%s;",uid)
+  profile=cur.first()
+  if profile==None:
+    update_time=None
+    birthday=None
+    self_introduction=None
+    field=None
+  else:
+    update_time=profile[1]
+    birthday=profile[2]
+    self_introduction=profile[4]
+    field=profile[5]
+  cursor=g.conn.execute("select * from friendlist where user_id=%s;",uid)
+  friends=cursor.first()
+  print friends
+  if friends==None:
+    update_time_f=None
+    friendlist=None
+  else:
+    update_time_f=friends[1]
+    friendlist=friends[2].split(',')
+  return render_template("employer.html",**locals())
 
            
 #update jobseeker profile
