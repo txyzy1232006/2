@@ -50,7 +50,7 @@ def sign():
   record=g.conn.execute('SELECT username FROM person WHERE username = %s',username)
   print record
   if not record.fetchone():
-    return redirect('/signinerror')
+    return render_template("signinerror.html")
     record.close()
   else:
     record=g.conn.execute('SELECT password FROM person WHERE username = %s',username)
@@ -59,13 +59,23 @@ def sign():
     record.close()
     if p[0] == password:
       if t =='employer':
-        return redirect('/employer/%s'% username)
-        print '/employer/%s'% username
+        cur=g.conn.execute("select e.* from employer as e, person as p  where e.user_id=p.user_id and p.username='%s';"%username)
+        print cur
+        a=cur.first()
+        if a==None:
+          return render_template("signinerror.html")
+        else:                  
+          return redirect('/employer/%s'% username)
       else:
-        return redirect('/jobseeker/%s'% username)  
-        print '/jobseeker/%s'% username
+        cur=g.conn.execute("select j.* from jobseeker as j, person as p  where j.user_id=p.user_id and p.username='%s';"%username)
+        print cur
+        a=cur.first()
+        if a==None:
+          return render_template("signinerror.html")
+        else:
+          return redirect('/jobseeker/%s'% username)  
     else: 
-      return redirect('/signinerror')
+      return render_template("signinerror.html")
 
 
 #sign in error
