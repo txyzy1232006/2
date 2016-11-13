@@ -1,0 +1,268 @@
+<html>
+
+  <style>
+
+    body{ 
+
+      font-size: 15pt;
+
+      font-family: arial;
+
+    }
+
+  </style>
+
+<meta http-equiv="refresh" content="60">
+
+<body>
+
+<h1>Hello,{{username}}!</h1>
+
+
+
+<div id="signout">
+
+    <div id="signout_context">
+
+	Not you?
+
+	<a href="/">Sign out</a>
+
+	</div>
+
+</div>
+
+
+
+
+
+<div id="profile" style="width:700px">
+
+    <div id="header" style="background-color:#FFA500;">
+
+        <h2 style="margin-bottom:0;">Your Proflie</h2>
+
+    </div>
+
+    <div id="time" style="background-color:#F5DEB3;height:30px;width:150px;float:left;text-align:center;">
+
+        <b>Update time</b>
+
+    </div>
+
+    <div id="time_content" style="background-color:#EEEEEE;height:30px;width:550px;float:left;">
+
+        {{update_time}}
+
+	</div>
+
+    <div id="birthday" style="background-color:#EEEEEE;height:30px;width:150px;float:left;text-align:center;">
+
+        <b>Birthday</b>
+
+    </div>
+
+    <div id="birthday_content" style="background-color:#F5DEB3;height:30px;width:550px;float:left;">
+
+        {{birthday}}
+
+	</div>
+
+    <div id="field" style="background-color:#F5DEB3;height:30px;width:150px;float:left;text-align:center;">
+
+        <b>Field</b>
+
+    </div>
+
+    <div id="field_content" style="background-color:#EEEEEE;height:30px;width:550px;float:left;">
+
+        {{field}}
+
+	</div>
+
+    <div id="selfintro" style="background-color:#EEEEEE;height:100px;width:150px;float:left;text-align:center;vertical-align:center">
+
+        <b>Personal Introduction</b>
+
+    </div>
+
+    <div id="selfintro_content" style="background-color:#F5DEB3;height:100px;width:550px;float:left;">
+
+        {{self_introduction}}
+
+	</div>
+
+    <div id="footer" style="background-color:#FFA500;clear:both;text-align:center;">
+
+	Want to update?
+
+	<a href="/employer/{{username}}/update">Click here</a>
+
+	</div>
+
+</div>
+
+
+
+
+
+
+<div id="friendlist" style="position:absolute;top:130px;left:720px;width:150px;height:250px;background-color:#F0FFF0">
+
+    <div id="header";style="height:30px;width:150px;float:left;text-align:center;float:left;">
+
+	    <b>Friends</b>
+
+    </div>
+
+    <div id="ftime_content" style="height:30px;width:150px;float:left;">
+
+        {{update_time_f}}
+
+		<hr>
+
+	</div>
+
+
+<br>
+
+	<div>
+
+    {% for n in friendlist %}
+
+    <div>{{n}}</div>
+
+    {% endfor %}
+
+	<hr style="margin-bottom:1;">
+
+    </div>
+
+	<hr style="margin-bottom:1;">
+
+	<div id="footer_f" style="background-color:#48D1CC;clear:both;text-align:center;">
+
+	<a href="/friendlist/{{username}}" target="_blank">click here to edit</a>
+
+	</div>
+
+    
+
+</div>
+
+  
+
+
+
+<hr>
+<h2 style="color:red"> Don't forget to check your posted jobs</h2>
+
+<p><a href="/employer/{{username}}/job" target="_blank">View your posted jobs</a></p>
+
+<hr>
+<h2 style="color:red"> Want to check the applicants that apply for your posted jobs?</h2>
+
+<p><a href="/employer/{{username}}/application" target="_blank">View your applicants</a></p>
+
+<hr>
+<h2 style="color:red">Want to check some resumes of jobseekers?</h2>
+
+<p><a href="'/employer/{{username}}/resume" target="_blank">View the resumes you follow</a></p>
+
+
+
+
+<hr>
+
+
+
+
+
+<h2 style="color:red"> Find a resume here!</h2>
+
+<form action="/employer/{{username}}/search" method="post">
+
+    <table>
+
+
+        <tr>
+
+            <td><label for="txtjobseeker" >Jobseeker</label></td>
+
+			<td><label for="txtskills" >Skills</label></td>
+
+			<td><label for="txthonor" >Honor</label></td>
+      <td><label for="txtvolun" >Volunteer</label></td>
+
+			<td><label for="txtwork" >Work_experience</label></td>
+      <td><label for="txtcert" >Certificate</label></td>
+
+            
+
+        </tr>
+
+        <tr>
+
+            <td><input type="text" id="txtjobseeker" name="jobseeker" /></td>
+
+            <td><input type="text" id="txtskills" name="skills" /></td>
+
+            <td><input type="text" id="txthonor" name="honor" /></td>
+
+			<td><input type="text" id="txtvolun" name="Volunteer" /></td>
+      <td><input type="text" id="txtwork" name="work_experience" /></td>
+      <td><input type="text" id="txtcert" name="Certificate" /></td>
+        </tr>
+
+		<tr>
+
+            <td colspan=2>
+
+                <input type="reset" value="reset"/>
+
+                <input type="submit" value="search"/>
+
+            </td>
+
+        </tr>
+
+    </table>
+
+</form> 
+
+
+
+
+<br>
+
+<table width="870" border="0">
+
+  <tr>
+
+  <td colspan="2" style="background-color:#AFEEEE;text-align:center;">copyright © zy2232</td>
+
+  </tr>
+
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+
+
+
+
+
+</html>
