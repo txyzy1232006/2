@@ -149,25 +149,31 @@ def profile_e(username): pass
 #jobseeker
 @app.route('/jobseeker/<username>')
 def profile_j(username): 
-  cur=g.conn.execute("select pu.* from profile_update as pu,person as p where pu.user_id=p.user_id and p.username='%s';"%username)
+  cursor=g.conn.execute("select user_id from person where username='%s';"%username)
+  uid=cursor.first()[0]
+  cur=g.conn.execute("select * from profile_update where user_id=%s;"%uid)
   profile=cur.first()
-  print profile
-  uid=profile[0]
-  update_time=profile[1]
-  birthday=profile[2]
-  self_introduction=profile[4]
-  field=profile[5]
+  if profile==None:
+    update_time=None
+    birthday=None
+    self_introduction=None
+    field=None
+  else:
+    update_time=profile[1]
+    birthday=profile[2]
+    self_introduction=profile[4]
+    field=profile[5]
   cursor=g.conn.execute("select * from friendlist where user_id=%s;"%uid)
   friends=cursor.first()
   print friends
-  update_time_f=friends[1]
-  friendlist=friends[2].split(',')
+  if friends==None:
+    update_time_f=None
+    friendlist=None
+  else:
+    update_time_f=friends[1]
+    friendlist=friends[2].split(',')
   return render_template("jobseeker.html",**locals())
   
-
-#friendlist
-@app.route('/friendlist/<username>')
-def list(username):pass
 
 #add friend
 @app.route('/friendlist/<username>/add')
