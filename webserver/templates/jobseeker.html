@@ -1,0 +1,131 @@
+<html>
+  <style>
+    body{ 
+      font-size: 15pt;
+      font-family: arial;
+    }
+  </style>
+<body>
+<h1>Hello,{{username}}!</h1>
+
+<div id="signout">
+    <div id="signout_context">
+	Not you?
+	<a href="/">Sign out</a>
+	</div>
+</div>
+
+
+<div id="profile" style="width:700px">
+    <div id="header" style="background-color:#FFA500;">
+        <h2 style="margin-bottom:0;">Your Proflie</h2>
+    </div>
+    <div id="time" style="background-color:#F5DEB3;height:30px;width:150px;float:left;text-align:center;">
+        <b>Update time</b>
+    </div>
+    <div id="time_content" style="background-color:#EEEEEE;height:30px;width:550px;float:left;">
+        {{update_time}}
+	</div>
+    <div id="birthday" style="background-color:#EEEEEE;height:30px;width:150px;float:left;text-align:center;">
+        <b>Birthday</b>
+    </div>
+    <div id="birthday_content" style="background-color:#F5DEB3;height:30px;width:550px;float:left;">
+        {{birthday}}
+	</div>
+    <div id="field" style="background-color:#F5DEB3;height:30px;width:150px;float:left;text-align:center;">
+        <b>Field</b>
+    </div>
+    <div id="field_content" style="background-color:#EEEEEE;height:30px;width:550px;float:left;">
+        {{field}}
+	</div>
+    <div id="selfintro" style="background-color:#EEEEEE;height:100px;width:150px;float:left;text-align:center;vertical-align:center">
+        <b>Personal Introduction</b>
+    </div>
+    <div id="selfintro_content" style="background-color:#F5DEB3;height:100px;width:550px;float:left;">
+        {{self_introduction}}
+	</div>
+    <div id="footer" style="background-color:#FFA500;clear:both;text-align:center;">
+	Want to update?
+	<a href="/employer/{{username}}/update">Click here</a>
+	</div>
+</div>
+
+
+
+<div id="friendlist" style="position:absolute;top:130px;left:720px;width:150px;height:250px;background-color:#F0FFF0">
+    <div id="header";style="height:30px;width:150px;float:left;text-align:center;float:left;">
+	    <b>Friends</b>
+    </div>
+    <div id="ftime_content" style="height:30px;width:150px;float:left;">
+        {{update_time_f}}
+		<hr>
+	</div>
+	<br>
+	<div>
+    {% for n in friendlist %}
+    <div>{{n}}</div>
+    {% endfor %}
+	<hr style="margin-bottom:1;">
+    </div>
+	<hr style="margin-bottom:1;">
+	<div id="footer_f" style="background-color:#48D1CC;clear:both;text-align:center;">
+	New friend?
+	<a href="/friendlist/{{username}}/add">add</a>
+	</div>
+    
+</div>
+  
+<hr>
+<h2 style="color:red">Resume is very important!!!</h2>
+<p><a href="/jobseeker/{{username}}/resume">View your resume</a></p>
+<hr>
+
+
+<h2 style="color:red"> Find a job here!</h2>
+<form action="/jobseeker/{{username}}/search" method="post">
+    <table>
+		<tr>  
+		Type of job <input type="radio" name="type" value="full_time" > full time <input type="radio" name="type" value="part_time" checked="checked">part time<br>
+        </tr>
+        <tr>
+            <td><label for="txtemployer" >Employer</label></td>
+			<td><label for="txttitle" >Title</label></td>
+			<td><label for="txtloc" >Location</label></td>
+			<td><label for="txtsalary" >Salary</label></td>
+            
+        </tr>
+        <tr>
+            <td><input type="text" id="txtemployer" name="employer" /></td>
+            <td><input type="text" id="txttitle" name="title" /></td>
+            <td><input type="text" id="txtloc" name="location" /></td>
+			<td><input type="text" id="txtsalary" name="salary" /></td>
+        </tr>
+		<tr>
+            <td colspan=2>
+                <input type="reset" value="reset"/>
+                <input type="submit" value="search"/>
+            </td>
+        </tr>
+    </table>
+</form> 
+<hr>
+<h2 style="color:red"> Don't forget to check your application</h2>
+<p><a href="/jobseeker/{{username}}/status">View your job application</a></p>
+
+<br>
+<table width="870" border="0">
+  <tr>
+  <td colspan="2" style="background-color:#AFEEEE;text-align:center;">copyright © zy2232</td>
+  </tr>
+</table>
+
+
+
+
+
+
+
+</body>
+
+
+</html>
