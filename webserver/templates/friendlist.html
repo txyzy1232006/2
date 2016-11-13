@@ -1,0 +1,74 @@
+<html>
+  <style>
+    body{ 
+      font-size: 15pt;
+      font-family: arial;
+    }
+  </style>
+<body>
+<h1>Hello,{{username}}!</h1>
+<div id="friendlist" style="width:700px">
+    <div id="header" style="background-color:#FFA500;">
+        <h2 style="margin-bottom:0;">Your friends</h2>
+    </div>
+    <div id="time" style="background-color:#F5DEB3;height:30px;width:150px;float:left;text-align:center;">
+        <b>Update time</b>
+    </div>
+    <div id="time_content" style="background-color:#EEEEEE;height:30px;width:550px;float:left;">
+        {{update_time}}
+	</div>
+    <div id="friend" style="background-color:#EEEEEE;height:50px;width:150px;float:left;text-align:center;">
+        <b>friends</b>
+    </div>
+    <div id="birthday_content" style="background-color:#F5DEB3;height:50px;width:550px;float:left;">
+        {{friendlist}}
+</div>
+<form action="/viewprofile" target="_blank method="post">
+    <table>
+	    View friend's profile
+        <tr>
+            <td><label for="proname">Username of friend：</label></td>
+            <td><input type="text" id="proname" name="proname" /></td>
+            <td><input type="submit" value="view"/></td>
+        </tr>
+    </table>
+</form> 
+<form action="/friendlist/{{username}}/add" method="post">
+    <table>
+	    New friend? add here
+        <tr>
+            <td><label for="addname">Username：</label></td>
+            <td><input type="text" id="addname" name="addname" /></td>
+            <td><input type="submit" value="add"/></td>
+        </tr>
+    </table>
+</form> 
+<form action="/friendlist/{{username}}/delete" method="post">
+    <table>
+	    Not friend any more? delete here
+        <tr>
+            <td><label for="delname">Username：</label></td>
+            <td><input type="text" id="delname" name="delname" /></td>
+            <td><input type="submit" value="delete"/></td>
+        </tr>
+    </table>
+</form> 
+
+
+
+<table width="700" border="0">
+  <tr>
+  <td colspan="2" style="background-color:#AFEEEE;text-align:center;">copyright © zy2232</td>
+  </tr>
+</table>
+
+
+
+
+
+
+
+</body>
+
+
+</html>
