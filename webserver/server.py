@@ -59,21 +59,21 @@ def sign():
     record.close()
     if p[0] == password:
       if t =='employer':
-        cur=g.conn.execute("select e.* from employer as e, person as p  where e.user_id=p.user_id and p.username='%s';"%username)
+        cur=g.conn.execute("select e.* from employer as e, person as p  where e.user_id=p.user_id and p.username='%s';",username)
         print cur
         a=cur.first()
         if a==None:
           return render_template("signinerror.html")
         else:                  
-          return redirect('/employer/%s'% username)
+          return redirect('/employer/%s', username)
       else:
-        cur=g.conn.execute("select j.* from jobseeker as j, person as p  where j.user_id=p.user_id and p.username='%s';"%username)
+        cur=g.conn.execute("select j.* from jobseeker as j, person as p  where j.user_id=p.user_id and p.username='%s';",username)
         print cur
         a=cur.first()
         if a==None:
           return render_template("signinerror.html")
         else:
-          return redirect('/jobseeker/%s'% username)  
+          return redirect('/jobseeker/%s', username)  
     else: 
       return render_template("signinerror.html")
 
@@ -149,9 +149,9 @@ def profile_e(username): pass
 #jobseeker
 @app.route('/jobseeker/<username>')
 def profile_j(username): 
-  cursor=g.conn.execute("select user_id from person where username='%s';"%username)
+  cursor=g.conn.execute("select user_id from person where username='%s';",username)
   uid=cursor.first()[0]
-  cur=g.conn.execute("select * from profile_update where user_id=%s;"%uid)
+  cur=g.conn.execute("select * from profile_update where user_id=%s;",uid)
   profile=cur.first()
   if profile==None:
     update_time=None
@@ -163,7 +163,7 @@ def profile_j(username):
     birthday=profile[2]
     self_introduction=profile[4]
     field=profile[5]
-  cursor=g.conn.execute("select * from friendlist where user_id=%s;"%uid)
+  cursor=g.conn.execute("select * from friendlist where user_id=%s;",uid)
   friends=cursor.first()
   print friends
   if friends==None:
@@ -177,9 +177,9 @@ def profile_j(username):
 #friendlist
 @app.route('/friendlist/<username>')
 def list(username):
-  cursor=g.conn.execute("select user_id from person where username='%s';"%username)
+  cursor=g.conn.execute("select user_id from person where username='%s';",username)
   uid=cursor.first()[0]
-    cursor=g.conn.execute("select * from friendlist where user_id=%s;"%uid)
+  cursor=g.conn.execute("select * from friendlist where user_id=%s;",uid)
   friends=cursor.first()
   print friends
   if friends==None:
@@ -187,17 +187,74 @@ def list(username):
     friendlist=None
   else:
     update_time_f=friends[1]
-    friendlist=friends[2].split(',')
+    friendlist=friends[2]
     return render_template("friendlist.html",**locals())
+  
+#view profile
+@app.route('/viewprofile',methods=['POST'])
+def viewp():
+  username = request.form['proname']
+  cursor=g.conn.execute("select user_id from person where username='%s';",username)
+  uid=cursor.first()[0]
+  cur=g.conn.execute("select * from profile_update where user_id=%s;",uid)
+  profile=cur.first()
+  if profile==None:
+    update_time=None
+    birthday=None
+    self_introduction=None
+    field=None
+  else:
+    update_time=profile[1]
+    birthday=profile[2]
+    self_introduction=profile[4]
+    field=profile[5]
+  return render_template("viewprofile.html",**locals())
   
 
 #add friend
-@app.route('/friendlist/<username>/add')
-def add_f(username):pass
+@app.route('/friendlist/<username>/add',methods=['POST'])
+def add_f(username):
+  newname = request.form['addname']
+  cursor = g.conn.execute("SELECT username FROM person")
+  allnames = []
+  for result in cursor:
+    allnames.append(result[0])  # can also be accessed using result[0]
+  cursor.close()
+  if newname not in allnames:
+    return render_template('frienderror.html')
+  else:
+    cursor=g.conn.execute("select user_id from person where username='%s';",username)
+    uid=cursor.first()[0]
+    cursor=g.conn.execute("select * from friendlist where user_id=%s;",uid)
+    friends=cursor.first()  
+    friendlist=friends[2]
+    a=friendlist.split(',')
+    a.append(newname)
+    content = ",".join(a)
+    time=g.conn.execute("select current_date;")
+    updatetime=time.first()[0]
+    g.conn.execute("update friendlist set update_time=timestamp'%s',username='%s' where user_id=%s;"%(updatetime,content,uid))
+    return render_template('friendsus.html')
 
 #delete friend
-@app.route('/friendlist/<username>/delete')
-def delete_f(username):pass
+@app.route('/friendlist/<username>/delete',methods=['POST'])
+def delete_f(username):
+  oldname = request.form['delname']
+  cursor=g.conn.execute("select user_id from person where username='%s';",username)
+  uid=cursor.first()[0]
+  cursor=g.conn.execute("select * from friendlist where user_id=%s;",uid)
+  friends=cursor.first()
+  friendlist=friends[2]
+  a=friendlist.split(',')
+  if oldname not in a:
+    return render_template('frienderror.html')
+  else:
+    a.remove(old)
+    content = ",".join(a)
+    time=g.conn.execute("select current_date;")
+    updatetime=time.first()[0]
+    g.conn.execute("update friendlist set update_time=timestamp'%s',username='%s' where user_id=%s;"%(updatetime,content,uid))
+    return render_template('friendsus.html')
            
 #update employer profile
 @app.route('/employer/<username>/update')
