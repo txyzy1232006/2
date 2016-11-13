@@ -97,6 +97,9 @@ def add():
   lastname = request.form['last_name']
   email = request.form['email']
   password = request.form['password']
+  usertype = request.form['usertype']
+  name=request.form['name']
+  start=username[0]
   #username exists
   cursor = g.conn.execute("SELECT username FROM person")
   allnames = []
@@ -112,12 +115,13 @@ def add():
     allemails.append(result[0])  # can also be accessed using result[0]
   cursor1.close()
   #email exists end
-  if username in allnames:
-    return redirect('/signuperror')
+  if username in allnames or email in allemails:
+    return render_template("signuperror.html")
   else:
-    if email in allemails:
-      return redirect('/signuperror')
-    else:
+    #Check username valid
+    if type(start)!=str or '@' not in email:
+      return render_template("signupinvalid.html")
+    else:        
       #new user_id
       record1 = g.conn.execute("select max(user_id)+1 from person")
       record=record1.fetchone()
@@ -126,18 +130,16 @@ def add():
       #new user_id end
       cmd = 'INSERT INTO person VALUES (:username1, :uid1, :firstname1, :lastname1, :email1, :password1)';
       g.conn.execute(text(cmd), username1=username,uid1=uid, firstname1=firstname,lastname1=lastname,email1=email, password1=password);
-      return redirect('/signupsuccessfully')
+      if usertpye=='jobseeker':
+        recordj = g.conn.execute("select max(jobseeker_id)+1 from jobseeker")
+        jid=recordj.first()[0]
+        g.conn.execute("insert into jobseeker values (:uid1, :jid1)", uid1=uid, jid1=jid)
+      else:
+        recorde = g.conn.execute("select max(employer_id)+1 from employer")
+        eid=recorde.first()[0]
+        g.conn.execute("insert into employer values (:uid1, :eid1,:name1)", uid1=uid, eid1=eid, name1=name)
+      return render_template("sus.html")
 
-
-#sign up successfully
-@app.route('/signupsuccessfully')
-def sus():
-  return render_template("sus.html")
-
-#sign up error
-@app.route('/signuperror')
-def signuperror():
-  return render_template("signuperror.html")
 
 #employer
 @app.route('/employer/<username>')
