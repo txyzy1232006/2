@@ -93,9 +93,8 @@ def add():
   password = request.form['password']
   usertype = request.form['usertype']
   if username=='' or firstname=='' or lastname=='' or email=='' or password=='':
-    print username, firstname, lastname, email, password
     return render_template("signupinvalid.html")
-  start=username[0]
+  start=str(username[0])
   #username exists
   cursor = g.conn.execute("SELECT username FROM person;")
   allnames = []
@@ -116,8 +115,7 @@ def add():
     return render_template("signuperror.html")
   else:
     #Check username valid
-    if type(start)!=str or email.count('@')!=1 or len(username)<6 or len(password)<8:
-      print type(start), email.count('@'), len(username), len(password)
+    if str.isdigit(start) or email.count('@')!=1 or len(username)<6 or len(password)<8:
       return render_template("signupinvalid.html")
     else:        
       #new user_id
@@ -145,10 +143,10 @@ def profile_e(username):
   cur=g.conn.execute("select * from profile_update where user_id=%s;",uid)
   profile=cur.first()
   if profile==None:
-    update_time=None
-    birthday=None
-    self_introduction=None
-    field=None
+    update_time=''
+    birthday=''
+    self_introduction=''
+    field=''
   else:
     update_time=profile[1]
     birthday=profile[2]
@@ -157,8 +155,8 @@ def profile_e(username):
   cursor=g.conn.execute("select * from friendlist where user_id=%s;",uid)
   friends=cursor.first()
   if friends==None:
-    update_time_f=None
-    friendlist=None
+    update_time_f=''
+    friendlist=''
   else:
     update_time_f=friends[1]
     friendlist=friends[2].split(',')
@@ -172,10 +170,10 @@ def profile_j(username):
   cur=g.conn.execute("select * from profile_update where user_id=%s;",uid)
   profile=cur.first()
   if profile==None:
-    update_time=None
-    birthday=None
-    self_introduction=None
-    field=None
+    update_time=''
+    birthday=''
+    self_introduction=''
+    field=''
   else:
     update_time=profile[1]
     birthday=profile[2]
@@ -185,8 +183,8 @@ def profile_j(username):
   friends=cursor.first()
   print friends
   if friends==None:
-    update_time_f=None
-    friendlist=None
+    update_time_f=''
+    friendlist=''
   else:
     update_time_f=friends[1]
     friendlist=friends[2].split(',')
@@ -200,10 +198,10 @@ def view_to_update(username):
   cur=g.conn.execute("select * from profile_update where user_id=%s;",uid)
   profile=cur.first()
   if profile==None:
-    update_time=None
-    birthday=None
-    self_introduction=None
-    field=None
+    update_time=''
+    birthday=''
+    self_introduction=''
+    field=''
   else:
     update_time=profile[1]
     birthday=profile[2]
@@ -216,14 +214,14 @@ def view_to_update(username):
 def profileupdate(username):
     cursor=g.conn.execute("select user_id from person where username='%s';",username)
     uid=cursor.first()[0]
-    birthday=request.form['birthday']
+    birthday=str(request.form['birthday'])
     field=request.form['Field']
     selfintro=request.form['Self introduction']
     time=g.conn.execute("select current_date;")
     updatetime=time.first()[0]
     g.conn.execute("update Profile_update set update_time=timestamp %s where user_id=%s;",(updatetime,uid))
     #Check update valid
-    if birthday!=None:
+    if birthday!='':
       cursor=g.conn.execute("select %s like '19__-__-__';",birthday)
       birthvalid=cursor.first()[0]
       if not birthvalid:
@@ -234,9 +232,9 @@ def profileupdate(username):
           return render_template("profileinvalid.html",username=username)
         else:
           g.conn.execute("update Profile_update set birthday=timestamp %s where user_id=%s;",(birthday,uid))
-    if field!=None:
+    if field!='':
       g.conn.execute("update Profile_update set field=%s where user_id=%s;",(field,uid))
-    if selfintro!=None:
+    if selfintro!='':
       g.conn.execute("update Profile_update set self_introduction=%s where user_id=%s;",(field,uid))
     return render_template("profilesus.html",username=username)
 
@@ -249,8 +247,8 @@ def list(username):
   friends=cursor.first()
   print friends
   if friends==None:
-    update_time_f=None
-    friendlist=None
+    update_time_f=''
+    friendlist=''
   else:
     update_time_f=friends[1]
     friendlist=friends[2]
@@ -265,10 +263,10 @@ def viewp():
   cur=g.conn.execute("select * from profile_update where user_id=%s;",uid)
   profile=cur.first()
   if profile==None:
-    update_time=None
-    birthday=None
-    self_introduction=None
-    field=None
+    update_time=''
+    birthday=''
+    self_introduction=''
+    field=''
   else:
     update_time=profile[1]
     birthday=profile[2]
@@ -332,8 +330,8 @@ def job_posted(username):
   s=cursor.fetchall()
   cursor.close()
   if s==None:
-    jobs =None
-    jidlist=None
+    jobs =''
+    jidlist=''
   else:
     jobs = []
     jidlist=[]
@@ -356,7 +354,7 @@ def add_j(username):
   employer=request.form['employer']
   title=request.form['title']
   location=request.form['location']
-  salary1=request.form['salary']
+  salary1=str(request.form['salary'])
   if not str.isdigit(salary1):
     return render_template('jobpost_invalid.html',name=username)
   else:
@@ -393,16 +391,16 @@ def resume(username):
   cursor1=g.conn.execute("select * from resume_updated where jobseeker_id=%s;",jid)
   resume=cursor1.first()
   if resume==None:
-    rid=None
-    education=None
-    skills=None
-    volunteer=None
-    honor=None
-    work_experience=None
-    certificate=None
-    address=None
-    email=None
-    number=None
+    rid=''
+    education=''
+    skills=''
+    volunteer=''
+    honor=''
+    work_experience=''
+    certificate=''
+    address=''
+    email=''
+    number=''
   else: 
     rid=resume[0]
     education=resume[2]
@@ -432,27 +430,27 @@ def resume_update(username):
   certificate=request.form['certificate']
   address=request.form['address']
   email=request.form['email']
-  number=request.form['phonenumber']
-  if education!=None:
+  number=str(request.form['phonenumber'])
+  if education!='':
     g.conn.execute("update resume_updated set education=%s where jobseeker_id=%s;",(education,jid))
-  if skills!=None:
+  if skills!='':
     g.conn.execute("update resume_updated set skills=%s where jobseeker_id=%s;"%(skills,jid))
-  if volunteer!=None:
+  if volunteer!='':
     g.conn.execute("update resume_updated set volunteer=%s where jobseeker_id=%s;",(volunteer,jid))
-  if honor!=None:
+  if honor!='':
     g.conn.execute("update resume_updated set honor=%s where jobseeker_id=%s;",(honor,jid))
-  if work_experience!=None:
+  if work_experience!='':
     g.conn.execute("update resume_updated set work_experience=%s where jobseeker_id=%s;",(work_experience,jid))
-  if certificate!=None:
+  if certificate!='':
     g.conn.execute("update resume_updated set certificate=%s where jobseeker_id=%s;",(certificate,jid))
-  if address!=None:
+  if address!='':
     g.conn.execute("update resume_updated set address=%s where jobseeker_id=%s;",(address,jid))
-  if email!=None:
+  if email!='':
     if '@' not in email and email.count('@')>1:
       return render_template('update_resume_error.html',username=username)
     else:
       g.conn.execute("update resume_updated set email=%s where jobseeker_id=%s;",(email,jid))
-  if number!=None:
+  if number!='':
     if number[3]!='-' or number[7]!='-' or number.count('-')>2:
       return render_template('update_resume_error.html',username=username)
     else:
@@ -473,7 +471,7 @@ def search_j(username):
   employer=request.form['employer']
   title=request.form['title']
   location=request.form['location']
-  salary1=request.form['salary']
+  salary1=str(request.form['salary'])
   if not str.isdigit(salary1):
     return render_template('jobsearch_invalid.html')
   salary=int(salary1)
@@ -482,22 +480,22 @@ def search_j(username):
   c=' catagory=%s'
   where.append(c)
   m.append(catagory)
-  if employer!=None:
+  if employer!='':
     e=' employer like %s'
     where.append(e)
     emp='%'+employer+'%'
     m.append(emp)
-  if title!=None:
+  if title!='':
     t=' title like %s'
     where.append(t)
     tit='%'+title+'%'
     m.append(tit)
-  if location!=None:
+  if location!='':
     l=' location like %s'
     where.append(l)
     loc='%'+location+'%'
     m.append(loc)
-  if salary!=None:
+  if salary!='':
     s=' salary>%s'
     where.append(s)
     m.append(salary)
@@ -531,7 +529,7 @@ def search_j(username):
 @app.route('/jobseeker/<username>/applyjob',methods=['POST'])
 def apply_job(username):
   jobid=request.form['job_id']
-  if jobid==None:
+  if jobid=='':
     return render_template('applyjob_invalid.html')
   cursor=g.conn.execute("select j.jobseeker_id from jobseeker as j, person as p where j.user_id=p.user_id and p.username=%s",username)
   jid=cursor.first()[0]
@@ -610,7 +608,7 @@ def edit(username):
   job=request.form['job_id']
   name=request.form['jobseeker']
   status=request.form['status']
-  time=request.form['time']
+  time=str(request.form['time'])
   cur=g.conn.execute("select j.jobseeker_id from jobseeker as j,person as p where p.user_id=j.user_id and p.username=%s;",name)
   jid=cur.first()[0]
   #check jobid and name
@@ -672,22 +670,22 @@ def search_r(username):
   certificate=request.form['Certificate']
   where=[]
   m=[]
-  if jobseeker!=None:
+  if jobseeker!='':
     j=' jobseeker like %s'
     where.append(j)
     jseeker='%'+jobseeker+'%'
     m.append(jseeker)
-  if skills!=None:
+  if skills!='':
     s=' skills like %s'
     where.append(s)
     sk='%'+skills+'%'
     m.append(sk)
-  if honor!=None:
+  if honor!='':
     h=' honor like %s'
     where.append(h)
     hn='%'+honor+'%'
     m.append(hn)
-  if volunteer!=None:
+  if volunteer!='':
     v=' volunteer like %s'
     where.append(v)
     vl='%'+volunteer+'%'
@@ -736,15 +734,15 @@ def viewr():
   cur=g.conn.execute("select p.username,r.* from resume_updated r,person p where r.jobseeker_id=p.user_id and p.username=%s;",rname)
   resume=cur.first()
   if resume==None:
-    education=None
-    skills=None
-    volunteer=None
-    honor=None
-    work_experience=None
-    certificate=None
-    address=None
-    email=None
-    phone_number=None
+    education=''
+    skills=''
+    volunteer=''
+    honor=''
+    work_experience=''
+    certificate=''
+    address=''
+    email=''
+    phone_number=''
   else:
     name=resume[0]
     education=resume[3]
