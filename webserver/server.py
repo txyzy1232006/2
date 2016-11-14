@@ -468,12 +468,12 @@ def resume_update(username):
   if address!='':
     g.conn.execute("update resume_updated set address=%s where jobseeker_id=%s;",(address,jid))
   if email!='':
-    if '@' not in email and email.count('@')>1:
+    if email.count('@')!=1 or email[-1]=='@' or email[0]=='@':
       return render_template('update_resume_error.html',username=username)
     else:
       g.conn.execute("update resume_updated set email=%s where jobseeker_id=%s;",(email,jid))
   if number!='':
-    if number[3]!='-' or number[7]!='-' or number.count('-')>2:
+    if number[3]!='-' or number[7]!='-' or number.count('-')>2 or len(number)!=12:
       return render_template('update_resume_error.html',username=username)
     else:
       n=number.split('-')
@@ -481,7 +481,7 @@ def resume_update(username):
         return render_template('update_resume_error.html',username=username)
       else:
         g.conn.execute("update resume_updated set phone_number=%s where jobseeker_id=%s;",(number,jid))
-  return render_template('update_resume_sus.html')
+  return render_template('update_resume_sus.html',username=username)
 
            
 #search job
