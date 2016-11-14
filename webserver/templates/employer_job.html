@@ -1,0 +1,254 @@
+<html>
+
+
+
+  <style>
+
+    body{ 
+
+
+
+      font-size: 15pt;
+
+
+
+      font-family: arial;
+
+
+
+    }
+
+
+
+  </style>
+
+
+
+<body>
+
+
+
+<h1>Hello,{{username}}!</h1>
+
+
+
+<table width="1400" border="0">
+
+    <tr>
+
+        <td colspan="7" style="background-color:#FFA500;">
+
+            <h1>Your posted jobs</h1>
+
+        </td>
+
+    </tr>
+
+    <tr style="background-color:#F5DEB3;">
+
+		<td width=150>Post time</td>
+
+		<td width=80>Job ID</td>
+
+	    <td width=200>Title</td>
+
+		<td width=120>Location</td>
+
+		<td width=80>Salary</td>
+
+		<td width=100>Catagory</td>
+
+		<td >Description</td>
+
+    </tr>
+
+	{% for row in jobs %}
+
+    <tr border='1' > 
+
+		{% for col in row %}
+
+		<td>{{col}}</td>
+
+	</tr>
+
+    {% endfor %}
+
+	<tr>
+
+         <td colspan="7" style="background-color:#FFA500;text-align:center;">{{username}}</td>
+
+    </tr>
+
+
+<hr>
+</table>
+
+Want to add a posted job?
+
+<form action="'/employer/{{username}}/postjob" method="post">
+
+    <table>
+
+	<tr> 
+
+		Type of job <input type="radio" name="type" value="full_time" > full time <input type="radio" name="type" value="part_time" checked="checked">part time<br>
+
+        </tr>
+
+        <tr>
+
+
+			<td><label for="txttitle" >Title</label></td>
+
+			<td><label for="txtloc" >Location</label></td>
+
+			<td><label for="txtsalary" >Salary</label></td>
+      <br>
+      <td><label for="txtdes" >Description</label></td>
+
+            
+
+        </tr>
+
+        <tr>         
+
+            <td><input type="text" id="txttitle" name="title" /></td>
+
+            <td><input type="text" id="txtloc" name="location" /></td>
+
+			      <td><input type="text" id="txtsalary" name="salary" /></td>
+        <br>
+
+            <td><input type="text" style="height:100px;width:370px" id="txtdes" name="description" /></td>
+
+        </tr>
+
+	<tr>
+
+	    <td colspan="4">
+
+	    Note: Enter a integer in the blank of salary.
+
+	    </td>
+
+	
+
+	</tr>
+
+	<tr>
+
+            <td colspan="2">
+
+                <input type="reset" value="reset"/>
+
+                <input type="submit" value="add"/>
+
+            </td>
+
+        </tr>
+
+    </table>
+
+
+
+
+</form> 
+
+
+<hr>
+<form action="/employer/{{username}}/deletejob" method="post">
+
+
+
+
+   <table>
+
+
+
+	    Want to delete the posted job?
+
+
+
+        <tr>
+
+
+
+            <td><label for="deljid">Job ID：</label></td>
+
+
+
+            <td><select id="deljid" name="deljid" >
+
+	       {% for jid in jidlist %}	    
+
+	       <option value="{{jid}}">{{jid}}</option>
+
+		{% endfor %}
+
+	        </select>
+
+            </td>
+
+            <td><input type="submit" value="delete"/></td>
+
+
+
+        </tr>
+
+
+
+    </table>
+
+
+</form> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table width="700" border="0">
+
+
+
+  <tr>
+
+
+
+  <td colspan="2" style="background-color:#AFEEEE;text-align:center;">copyright © zy2232</td>
+
+
+
+  </tr>
+
+
+
+</table>
+
+
+
+
+
+
+
+
+
+</body>
+
+
+
+
+
+
+
+</html>
