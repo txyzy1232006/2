@@ -117,10 +117,8 @@ def add():
       return render_template("signupinvalid.html")
     else:        
       #new user_id
-      record1 = g.conn.execute("select max(user_id)+1 from person")
-      record=record1.fetchone()
-      uid=record[0]
-      record1.close()
+      record = g.conn.execute("select max(user_id)+1 from person")
+      uid=record.first()[0]
       #new user_id end
       cmd = 'INSERT INTO person VALUES (:username1, :uid1, :firstname1, :lastname1, :email1, :password1)';
       g.conn.execute(text(cmd), username1=username,uid1=uid, firstname1=firstname,lastname1=lastname,email1=email, password1=password);
