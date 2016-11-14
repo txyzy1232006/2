@@ -59,7 +59,7 @@ def sign():
     record.close()
     if p[0] == password:
       if t =='employer':
-        cur=g.conn.execute("select e.* from employer as e, person as p  where e.user_id=p.user_id and p.username='%s';",username)
+        cur=g.conn.execute("select e.* from employer as e, person as p  where e.user_id=p.user_id and p.username=%s;",username)
         print cur
         a=cur.first()
         if a==None:
@@ -67,7 +67,7 @@ def sign():
         else:                  
           return redirect('/employer/%s', username)
       else:
-        cur=g.conn.execute("select j.* from jobseeker as j, person as p  where j.user_id=p.user_id and p.username='%s';",username)
+        cur=g.conn.execute("select j.* from jobseeker as j, person as p  where j.user_id=p.user_id and p.username=%s;",username)
         print cur
         a=cur.first()
         if a==None:
@@ -76,12 +76,6 @@ def sign():
           return redirect('/jobseeker/%s', username)  
     else: 
       return render_template("signinerror.html")
-
-
-#sign in error
-@app.route('/signinerror')
-def signinerror():
-  return render_template("signinerror.html")
 
 #sign up
 @app.route('/signup')
@@ -149,7 +143,7 @@ def profile_e(username): pass
 #jobseeker
 @app.route('/jobseeker/<username>')
 def profile_j(username): 
-  cursor=g.conn.execute("select user_id from person where username='%s';",username)
+  cursor=g.conn.execute("select user_id from person where username=%s;",username)
   uid=cursor.first()[0]
   cur=g.conn.execute("select * from profile_update where user_id=%s;",uid)
   profile=cur.first()
@@ -177,7 +171,7 @@ def profile_j(username):
 #friendlist
 @app.route('/friendlist/<username>')
 def list(username):
-  cursor=g.conn.execute("select user_id from person where username='%s';",username)
+  cursor=g.conn.execute("select user_id from person where username=%s;",username)
   uid=cursor.first()[0]
   cursor=g.conn.execute("select * from friendlist where user_id=%s;",uid)
   friends=cursor.first()
@@ -194,7 +188,7 @@ def list(username):
 @app.route('/viewprofile',methods=['POST'])
 def viewp():
   username = request.form['proname']
-  cursor=g.conn.execute("select user_id from person where username='%s';",username)
+  cursor=g.conn.execute("select user_id from person where username=%s;",username)
   uid=cursor.first()[0]
   cur=g.conn.execute("select * from profile_update where user_id=%s;",uid)
   profile=cur.first()
@@ -221,9 +215,9 @@ def add_f(username):
     allnames.append(result[0])  # can also be accessed using result[0]
   cursor.close()
   if newname not in allnames:
-    return render_template('frienderror.html')
+    return render_template('frienderror.html',name=username,username=newname)
   else:
-    cursor=g.conn.execute("select user_id from person where username='%s';",username)
+    cursor=g.conn.execute("select user_id from person where username=%s;",username)
     uid=cursor.first()[0]
     cursor=g.conn.execute("select * from friendlist where user_id=%s;",uid)
     friends=cursor.first()  
@@ -234,37 +228,37 @@ def add_f(username):
     time=g.conn.execute("select current_date;")
     updatetime=time.first()[0]
     g.conn.execute("update friendlist set update_time=timestamp'%s',username='%s' where user_id=%s;"%(updatetime,content,uid))
-    return render_template('friendsus.html')
+    return render_template('friendsus.html',name=username)
 
 #delete friend
 @app.route('/friendlist/<username>/delete',methods=['POST'])
 def delete_f(username):
   oldname = request.form['delname']
-  cursor=g.conn.execute("select user_id from person where username='%s';",username)
+  cursor=g.conn.execute("select user_id from person where username=%s;",username)
   uid=cursor.first()[0]
   cursor=g.conn.execute("select * from friendlist where user_id=%s;",uid)
   friends=cursor.first()
   friendlist=friends[2]
   a=friendlist.split(',')
   if oldname not in a:
-    return render_template('frienderror.html')
+    return render_template('frienderror.html',name=username,username=oldname)
   else:
     a.remove(old)
     content = ",".join(a)
     time=g.conn.execute("select current_date;")
     updatetime=time.first()[0]
     g.conn.execute("update friendlist set update_time=timestamp'%s',username='%s' where user_id=%s;"%(updatetime,content,uid))
-    return render_template('friendsus.html')
+    return render_template('friendsus.html',name=username)
            
-#update employer profile
-@app.route('/employer/<username>/update')
-def update_e(username):pass
+#profile
+@app.route('/profile/<username>')
+def profile(username):pass
 
-           
-#update jobseeker profile
-@app.route('/jobseeker/<username>/update')
-def update_j(username):pass 
-           
+#update  profile
+@app.route('/profileupdate/<username>')
+def profile_update(username):pass
+
+
            
 #jobs of an employer
 @app.route('/employer/<username>/job')
@@ -288,13 +282,78 @@ def job():pass
 
 #resume
 @app.route('/jobseeker/<username>/resume')
-def resume(username):pass
+def resume(username):
+  cursor=g.conn.execute("select j.jobseeker_id from jobseeker as j, person as p where j.user_id=p.user_id and p.username=%s",username)
+  jid=cursor.first()[0]
+  cursor1=g.conn.execute("select * from resume_updated where jobseeker_id=%s;",jid)
+  resume=cursor1.first()
+  if resume==None:
+    rid=None
+    education=None
+    skills=None
+    volunteer=None
+    honor=None
+    work_experience=None
+    certificate=None
+    address=None
+    email=None
+    number=None
+  else: 
+    rid=resume[0]
+    education=resume[2]
+    skills=resume[3]
+    volunteer=resume[4]
+    honor=resume[5]
+    work_experience=resume[6]
+    certificate=resume[7]
+    address=resume[8]
+    email=resume[9]
+    number=resume[10]
+  return render_template('resume.html',**locals())
+  
+  
            
 
 #update resume
-@app.route('/jobseeker/<username>/resume/update')
-def resume_update(username):pass
-          
+@app.route('/jobseeker/<username>/resume/update',methods=['POST'])
+def resume_update(username):
+  cursor=g.conn.execute("select j.jobseeker_id from jobseeker as j, person as p where j.user_id=p.user_id and p.username=%s",username)
+  jid=cursor.first()[0]
+  education=request.form['education']
+  skills=request.form['skills']
+  volunteer=request.form['volunteer']
+  honor=request.form['honor']
+  work_experience=request.form['work_experience']
+  certificate=request.form['certificate']
+  address=request.form['address']
+  email=request.form['email']
+  number=request.form['phonenumber']
+  if education!=None:
+    g.conn.execute("update resume_updated set education=%s where jobseeker_id=%s;",(education,jid))
+  if skills!=None:
+    g.conn.execute("update resume_updated set skills=%s where jobseeker_id=%s;"%(skills,jid))
+  if volunteer!=None:
+    g.conn.execute("update resume_updated set volunteer=%s where jobseeker_id=%s;",(volunteer,jid))
+  if honor!=None:
+    g.conn.execute("update resume_updated set honor=%s where jobseeker_id=%s;",(honor,jid))
+  if work_experience!=None:
+    g.conn.execute("update resume_updated set work_experience=%s where jobseeker_id=%s;",(work_experience,jid))
+  if certificate!=None:
+    g.conn.execute("update resume_updated set certificate=%s where jobseeker_id=%s;",(certificate,jid))
+  if address!=None:
+    g.conn.execute("update resume_updated set address=%s where jobseeker_id=%s;",(address,jid))
+  if email!=None:
+    if '@' not in email:
+      return render_template('update_resume_error.html',username=username)
+    else:
+      g.conn.execute("update resume_updated set email=%s where jobseeker_id=%s;",(email,jid))
+  if number!=None:
+    if number[3]!='-' or number[7]!='-':
+      return render_template('update_resume_error.html',username=username)
+    else:
+      g.conn.execute("update resume_updated set phone_number=%s where jobseeker_id=%s;",(number,jid))
+  return render_template('update_resume_sus.html')
+
            
 #search job
 @app.route('/jobseeker/<username>/search')
