@@ -734,6 +734,7 @@ def search_r(username):
     name=cur.first()[0]
     b1=[]
     b1.append(name)
+    j_name.append(name)
     for i in range(2,len(b)):
         b1.append(b[i])
     data.append(b1)
