@@ -117,8 +117,10 @@ def add():
       return render_template("signupinvalid.html")
     else:        
       #new user_id
-      record = g.conn.execute("select max(user_id)+1 from person")
-      uid=record.first()[0]
+      record1 = g.conn.execute("select max(user_id)+1 from person")
+      record=record1.fetchone()
+      uid=record[0]
+      record1.close()
       #new user_id end
       cmd = 'INSERT INTO person VALUES (:username1, :uid1, :firstname1, :lastname1, :email1, :password1)';
       g.conn.execute(text(cmd), username1=username,uid1=uid, firstname1=firstname,lastname1=lastname,email1=email, password1=password);
@@ -136,20 +138,6 @@ def add():
 #employer
 @app.route('/employer/<username>')
 def profile_e(username): pass
- 
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   
 
 #jobseeker
@@ -262,18 +250,19 @@ def delete_f(username):
     g.conn.execute("update friendlist set update_time=timestamp'%s',username='%s' where user_id=%s;"%(updatetime,content,uid))
     return render_template('friendsus.html',name=username)
            
+#profile
+@app.route('/profile/<username>')
+def profile(username):pass
+
 #update  profile
 @app.route('/profileupdate/<username>')
-def profile_update(username):
-  
-  ~~~~
-  return render_template('update_profile.html',**locals())
+def profile_update(username):pass
 
 
            
 #jobs of an employer
 @app.route('/employer/<username>/job')
-def job_posted(username):pass
+;def job_posted(username):pass
            
        
 #post new job
@@ -294,7 +283,7 @@ def job():pass
 #resume
 @app.route('/jobseeker/<username>/resume')
 def resume(username):
-  cursor=g.conn.execute("select j.jobseeker_id from jobseeker as j, person as p where j.user_id=p.user_id and p.username=%s",username)
+  cursor=g.conn.execute("select j.jobseeker_id from jobseeker as j, person as p where j.user_id=p.user_id and p.username=%s;",username)
   jid=cursor.first()[0]
   cursor1=g.conn.execute("select * from resume_updated where jobseeker_id=%s;",jid)
   resume=cursor1.first()
@@ -362,146 +351,119 @@ def resume_update(username):
     if number[3]!='-' or number[7]!='-':
       return render_template('update_resume_error.html',username=username)
     else:
-      g.conn.execute("update resume_updated set phone_number=%s where jobseeker_id=%s;",(number,jid))
-  return render_template('update_resume_sus.html')
+      g.conn.execute("update resume_updated set phone_number=%s where jobseeker_id=%s;",(number,jid))  return render_template('update_resume_sus.html')
+ 
 
+ #search job
+@app.route('/jobseeker/<username>/search')
+def search_j(username):pass
            
-#search job
-@app.route('/jobseeker/<username>/search',methods=['POST'])
-def search_j(username):
-  cursor=g.conn.execute("select j.jobseeker_id from jobseeker as j, person as p where j.user_id=p.user_id and p.username=%s",username)
-  jid=cursor.first()[0]
-  catagory=request.form['type']
-  employer=request.form['employer']
-  title=request.form['title']
-  location=request.form['location']
-  salary1=request.form['salary']
-  if not str.isdigit(salary1):
-    return render_template('jobsearch_invalid.html')
-  salary=int(salary1)
-  where=[]
-  m=[]
-  c=' catagory=%s'
-  where.append(c)
-  m.append(catagory)
-  if employer!=None:
-    e=' employer like %s'
-    where.append(e)
-    emp='%'+employer+'%'
-    m.append(emp)
-  if title!=None:
-    t=' title like %s'
-    where.append(t)
-    tit='%'+title+'%'
-    m.append(tit)
-  if location!=None:
-    l=' location like %s'
-    where.append(l)
-    loc='%'+location+'%'
-    m.append(loc)
-  if salary!=None:
-    s=' salary>%s'
-    where.append(s)
-    m.append(salary)
-  w=where[0]
-  i=1
-  while i<len(where):
-    w=w+' and'+where[i]
-    i+=1
-  c='select * from job_posted where'
-  cmd=c+w+';'
-  cur=g.conn.execute(cmd,m)
-  jobs=cur.fetchall()
-  cur.close()
-  e_name=[]
-  data=[]
-  alljid=[]
-  for n in jobs:
-    b=n[:]
-    alljid.append(b[2])
-    cur=conn.execute("select name from employer where employer_id=%s;",b[0])
-    name=cur.first()[0]
-    b1=[]
-    b1.append(name)
-    for i in range(1,len(b)):
-        b1.append(b[i])
-    data.append(b1)
-  return render_template('jobsearch.html',**locals())
-    
-  
+           
 #apply job
-@app.route('/jobseeker/<username>/applyjob',methods=['POST'])
-def apply_job(username):
-  jobid=request.form['job_id']
-  cursor=g.conn.execute("select j.jobseeker_id from jobseeker as j, person as p where j.user_id=p.user_id and p.username=%s",username)
-  jid=cursor.first()[0]
-  pair=(jid,jobid)
-  cur=g.conn.execute("select jobseeker_id,job_id from applyjob;")
-  allpairs=cur.fetchall()
-  if pair in allpairs:
-    return render_template('applyjob_error.html',username=username)
-  else:
-    cur=g.conn.execute("select employer_id from job_posted where job_id=%s;",jobid)
-    ename=cur.first()[0]
-    new=(jid,jobid,ename)
-    g.conn.execute("insert into applyjob values (%s,%s,'apply',%s);",new)
-    return render_template('applyjob_sus.html',username=username)
-  
-  
-  
-  
-  
-  
-  
-  
+@app.route('/jobseeker/<username>/applyjob')
+def apply_job(username):pass           
            
 #view job apply and interview for jobseeker
 @app.route('/jobseeker/<username>/status')
-def apply(username):
-  cur=g.conn.execute("select a.* from jobseeker as j, person as p, applyjob as a where a.jobseeker_id=j.jobseeker_id and j.user_id=p.user_id and p.username=%s;",username)
-  s=cur.fetchall()
-  cur.close()
-  info=[]
-  for m in s:
-    cursor=g.conn.execute("select e.name,j.title from job_posted as j,employer as e where j.job_id=%s and e.employer_id=%s;",(m[1],m[3]))
-    n=cursor.first()
-    info.append(n)
-    cursor.close()
-  time=[]
-  for m in s:
-    if m[2]=='interview':
-        cursor=conn.execute("select time from interview where job_id=%s and employer_id=%s and jobseeker_id=%s;",(m[1],m[3],m[0]))
-        t=cursor.first()[0]
-        time.append(t)   
-  applications=[]
-  interviews=[]
-  for i in range(0,len(m1)) :
-    a=m1[i][1]
-    b=info[i][0]
-    c=info[i][1]
-    d=m1[i][2]
-    e=time[i]
-    applications.append([a,b,c,d])
-    interviews.append([a,b,c,e])
-  return render_template('application_j.html',**locals())
-
-  
-  
+def apply(username):pass
+           
 
 #search resume
 @app.route('/employer/<username>/searchresume')
 def search_r(username):pass
-           
+          
 
 #resume followed
 @app.route('/employer/<username>/resume')
-def resume_followed(username):pass
+def resume_followed(username):
+  cursor=g.conn.execute("select user_id from person where username=%s;",username)
+  eid=cursor.first()[0]
+  cursor.close()  
+  cursor=g.conn.execute("select username from follow f,resume_updated r,person p where f.resume_id=r.resume_id and r.jobseeker_id=p.user_id and f.employer_id=%s;",eid)
+  resumelist = []
+  for result in cursor:
+    resumelist.append(result[0])
+  return render_template("employer_resume.html",**locals())
 
-          
-#follow resume
-@app.route('/employer/<username>/follow')
-def follow(username):pass
+#view resume
+@app.route('/viewresume',methods=['POST'])
+def viewr():
+  rname= request.form['proname']
+  cur=g.conn.execute("select p.username,r.* from resume_updated r,person p where r.jobseeker_id=p.user_id and p.username=%s;",rname)
+  resume=cur.first()
+  if resume==None:
+    education=None
+    skills=None
+    volunteer=None
+    honor=None
+    work_experience=None
+    certificate=None
+    address=None
+    email=None
+    phone_number=None
+  else:
+    name==resume[0]
+    education=resume[3]
+    skills=resume[4]
+    volunteer=resume[5]
+    honor=resume[6]
+    work_experience=resume[7]
+    certificate=resume[8]
+    address=resume[9]
+    email=resume[10]
+    phone_number=resume[11]
+  return render_template("viewresume.html",**locals())
 
+#add follow resume
+@app.route('/employer/<username>/addfollow')
+def addfollow(username):
+  newname = request.form['addname']
+  cursor = g.conn.execute("SELECT username FROM person")
+  allnames = []
+  for result in cursor:
+    allnames.append(result[0])  # can also be accessed using result[0]
+  cursor.close()
+  cursor=g.conn.execute("select user_id from person where username=%s;",username)
+  eid=cursor.first()[0]
+  cursor.close()
+  cursor=g.conn.execute("select username from follow f,resume_updated r,person p where f.resume_id=r.resume_id and r.jobseeker_id=p.user_id and f.employer_id=%s;",eid)
+  resumelist1 = []
+  for result in cursor:
+    resumelist1.append(result[0])
+  cursor.close()
+  if newname not in allnames :
+    return render_template('followerror.html',name=username,username=newname)
+  else if newname in resumelist1:
+    return render_template('followsus.html',name=username)
+  else:
+    cur=g.conn.execute("select r.resume_id from resume_updated r,person p where r.jobseeker_id=p.user_id and p.username=%s;",newname)
+    record=cur.first()
+    newid=record[0]
+    cur.close()
+    g.conn.execute("insert into follow values(:employer_id,:resume_id)",employer_ID=eid,resume_ID=newid)
+    return render_template('followsus.html',name=username)
+
+#delete follow resume
+@app.route('/employer/<username>/deletefollow')
+def deletefollow(username):
+  cursor=g.conn.execute("select user_id from person where username=%s;",username)
+  eid=cursor.first()[0]
+  cursor.close()
+  oldname = request.form['delname']
+  cursor=g.conn.execute("select username from follow f,resume_updated r,person p where f.resume_id=r.resume_id and r.jobseeker_id=p.user_id and f.employer_id=%s;",eid)
+  resumelist1 = []
+  for result in cursor:
+    resumelist1.append(result[0])
+  cursor.close()
+  if oldname not in resumelist1:
+    return render_template('followerror.html',name=username,username=oldname)
+  else:
+    cur=g.conn.execute("select r.resume_id from resume_updated r,person p where r.jobseeker_id=p.user_id and p.username=%s;",oldname)
+    record=cur.first()
+    oldid=record[0]
+    cur.close()
+    g.conn.execute("delete from follow where employer_id=%s and resume_id=%s;",(eid,oldid))
+    return render_template('friendsus.html',name=username)
            
 #view application and interview for employer
 @app.route('/employer/<username>/application')
@@ -512,6 +474,7 @@ def application(username):pass
 @app.route('/editstatus')
 def edit():pass
 
+           
            
            
            
