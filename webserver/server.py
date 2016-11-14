@@ -212,7 +212,7 @@ def view_to_update(username):
 #update  profile
 @app.route('/profileupdate/<username>',methods=['POST'])
 def profileupdate(username):
-    cursor=g.conn.execute("select user_id from person where username='%s';",username)
+    cursor=g.conn.execute("select user_id from person where username=%s;",username)
     uid=cursor.first()[0]
     birthday=str(request.form['birthday'])
     field=request.form['Field']
@@ -227,11 +227,26 @@ def profileupdate(username):
       if not birthvalid:
         return render_template("profileinvalid.html",username=username)
       else:
-        b=birthday.split('-')
-        if not str.isdigit(b[0]) or not str.isdigit(b[1]) or not str.isdigit(b[2]):
-          return render_template("profileinvalid.html",username=username)
+        t=birthday.split('-')
+        if not str.isdigit(t[0]) or not str.isdigit(t[1]) or not str.isdigit(t[2]):
+          return render_template('status_invalid.html')
         else:
-          g.conn.execute("update Profile_update set birthday=timestamp %s where user_id=%s;",(birthday,uid))
+          if int(t[1])>12 or int(t[1])<1 or int(t[2])<1:
+            return render_template('status_invalid.html')
+          else:
+            if int(t[1]) in (1,3,5,7,8,10,12) and int(t[2])>31:
+              return render_template('status_invalid.html')
+            elif int(t[1]) in (4,6,9,11) and int(t[2])>30:
+              return render_template('status_invalid.html')
+            elif int(t[1])==2 and int(t[2])>28:
+              return render_template('status_invalid.html')
+            else:
+              cur=g.conn.execute("select age(timestamp %s);",time)
+              a1=cur.first()[0]
+              cur=g.conn.execute("select extract(day from %s);",a1)
+              if cur.first()[0]>0:
+                return render_template('status_invalid.html')
+      g.conn.execute("update Profile_update set birthday=timestamp %s where user_id=%s;",(birthday,uid))
     if field!='':
       g.conn.execute("update Profile_update set field=%s where user_id=%s;",(field,uid))
     if selfintro!='':
@@ -641,13 +656,20 @@ def edit(username):
     if not str.isdigit(t[0]) or not str.isdigit(t[1]) or not str.isdigit(t[2]):
       return render_template('status_invalid.html')
     else:
-      if int(t[0])<2016 or int(t[1])>12 or int(t[1])<1 or int(t[2])<1 or int(t[2])>30:
+      if int(t[0])<2016 or int(t[1])>12 or int(t[1])<1 or int(t[2])<1:
         return render_template('status_invalid.html')
       else:
-        cur=g.conn.execute("select age(timestamp %s);",time)
-        a1=cur.first()[0]
-        cur=g.conn.execute("select extract(day from %s);",a1)
-        if cur.first()[0]>0:
+        if int(t[1]) in (1,3,5,7,8,10,12) and int(t[2])>31:
+          return render_template('status_invalid.html')
+        elif int(t[1]) in (4,6,9,11) and int(t[2])>30:
+          return render_template('status_invalid.html')
+        elif int(t[1])==2 and int(t[2])>28:
+          return render_template('status_invalid.html')
+        else:
+          cur=g.conn.execute("select age(timestamp %s);",time)
+          a1=cur.first()[0]
+          cur=g.conn.execute("select extract(day from %s);",a1)
+          if cur.first()[0]>0:
           return render_template('status_invalid.html')
   #check end
   g.conn.execute("update applyjob set status=%s where job_id=%s and jobseeker_id=%s;",(status, jobid,jid))
