@@ -240,7 +240,7 @@ def add_f(username):
     content = ",".join(a)
     time=g.conn.execute("select current_date;")
     updatetime=time.first()[0]
-    g.conn.execute("update friendlist set update_time=timestamp'%s',username='%s' where user_id=%s;"%(updatetime,content,uid))
+    g.conn.execute("update friendlist set update_time=timestamp %s,username= %s where user_id=%s;",(updatetime,content,uid))
     return render_template('friendsus.html',name=username)
 
 #delete friend
@@ -260,7 +260,7 @@ def delete_f(username):
     content = ",".join(a)
     time=g.conn.execute("select current_date;")
     updatetime=time.first()[0]
-    g.conn.execute("update friendlist set update_time=timestamp'%s',username='%s' where user_id=%s;"%(updatetime,content,uid))
+    g.conn.execute("update friendlist set update_time=timestamp %s,username=%s where user_id=%s;",(updatetime,content,uid))
     return render_template('friendsus.html',name=username)
            
 #update  profile
