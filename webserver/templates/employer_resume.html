@@ -1,0 +1,132 @@
+<html>
+
+  <style>
+
+    body{ 
+
+      font-size: 15pt;
+
+      font-family: arial;
+
+    }
+
+  </style>
+
+<body>
+
+<h1>Hello,{{username}}!</h1>
+
+<div id="employer_resume" style="width:700px">
+
+    <div id="header" style="background-color:#FFA500;">
+
+        <h2 style="margin-bottom:0;">Your following Resumes</h2>
+
+    </div>
+
+
+    <div id="resume" style="background-color:#EEEEEE;height:50px;width:150px;float:left;text-align:center;">
+
+        <b>resumes</b>
+
+    </div>
+
+    <div id="resumelist" style="background-color:#F5DEB3;height:50px;width:550px;float:left;">
+
+        {{resumelist}}
+
+    	<div id="footer" style="background-color:#FFA500;clear:both;text-align:center;">{{username}}
+
+	</div>
+
+</div>
+
+<form action="/viewresume" target="_blank" method="post">
+
+    <table>
+
+	    View Resumes you followed
+
+        <tr>
+
+            <td><label for="proid">ID of the resume：</label></td>
+
+            <td><input type="text" id="proid" name="proid" /></td>
+
+            <td><input type="submit" value="view"/></td>
+
+        </tr>
+
+    </table>
+
+</form> 
+
+<form action="'/employer/{{username}}/follow" method="post">
+
+    <table>
+
+	    New Resumes to follow? add here
+
+        <tr>
+
+            <td><label for="addname">Username：</label></td>
+
+            <td><input type="text" id="addname" name="addname" /></td>
+
+            <td><input type="submit" value="add"/></td>
+
+        </tr>
+
+    </table>
+
+</form> 
+
+<form action="/employer/{{username}}/followe_delete" method="post">
+
+    <table>
+
+	    Not follow that resume any more? delete here
+
+        <tr>
+
+            <td><label for="delname">Username：</label></td>
+
+            <td><input type="text" id="delname" name="delname" /></td>
+
+            <td><input type="submit" value="delete"/></td>
+
+        </tr>
+
+    </table>
+
+</form> 
+
+
+
+
+
+
+
+<table width="700" border="0">
+
+  <tr>
+
+  <td colspan="2" style="background-color:#AFEEEE;text-align:center;">copyright © zy2232</td>
+
+  </tr>
+
+</table>
+
+
+
+
+
+
+
+
+
+</body>
+
+
+
+</html>
