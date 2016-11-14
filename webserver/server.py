@@ -250,13 +250,12 @@ def delete_f(username):
     g.conn.execute("update friendlist set update_time=timestamp'%s',username='%s' where user_id=%s;"%(updatetime,content,uid))
     return render_template('friendsus.html',name=username)
            
-#profile
-@app.route('/profile/<username>')
-def profile(username):pass
-
 #update  profile
 @app.route('/profileupdate/<username>')
-def profile_update(username):pass
+def profile_update(username):
+  
+  ~~~~
+  return render_template('update_profile.html',**locals())
 
 
            
@@ -367,8 +366,40 @@ def apply_job(username):pass
            
 #view job apply and interview for jobseeker
 @app.route('/jobseeker/<username>/status')
-def apply(username):pass
-           
+def apply(username):
+  cur=g.conn.execute("select a.* from jobseeker as j, person as p, applyjob as a where a.jobseeker_id=j.jobseeker_id and j.user_id=p.user_id and p.username=%s;",username)
+  s=cur.fetchall()
+  cur.close()
+  info=[]
+  for m in s:
+    cursor=g.conn.execute("select e.name,j.title from job_posted as j,employer as e where j.job_id=%s and e.employer_id=%s;",(m[1],m[3]))
+    n=cursor.first()
+    info.append(n)
+    cursor.close()
+  time=[]
+  for m in s:
+    if m[2]=='interview':
+        cursor=conn.execute("select time from interview where job_id=%s and employer_id=%s and jobseeker_id=%s;",(m[1],m[3],m[0]))
+        t=cursor.first()[0]
+        time.append(t)   
+  applications=[]
+  interviews=[]
+  for i in range(0,len(m1)) :
+    a=m1[i][1]
+    b=info[i][0]
+    c=info[i][1]
+    d=m1[i][2]
+    e=time[i]
+    applications.append([a,b,c,d])
+    interviews.append([a,b,c,e])
+  return render_template('application_j.html',**locals())
+  
+  
+  
+  
+  return render_template('application_j.html',)
+  
+  
 
 #search resume
 @app.route('/employer/<username>/searchresume')
