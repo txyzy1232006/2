@@ -21,9 +21,10 @@
 		<td width=120>Status</td>
     </tr>
 	{% for row in applications %}
-    <tr border='1' > 
+        <tr border='1' > 
 		{% for col in row %}
 		<td>{{col}}</td>
+	    		{% endfor %}
 	</tr>
     {% endfor %}
 	<tr>
@@ -50,6 +51,7 @@
     <tr border='1' > 
 		{% for col in row %}
 		<td>{{col}}</td>
+	    		{% endfor %}
 	</tr>
     {% endfor %}
 	<tr>
