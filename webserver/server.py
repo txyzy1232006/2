@@ -138,7 +138,7 @@ def add():
 #employer
 @app.route('/employer/<username>')
 def profile_e(username): 
-  cursor=g.conn.execute("select user_id from person where username='%s';",username)
+  cursor=g.conn.execute("select user_id from person where username=%s;",username)
   uid=cursor.first()[0]
   cur=g.conn.execute("select * from profile_update where user_id=%s;",uid)
   profile=cur.first()
@@ -550,9 +550,7 @@ def search_j(username):
 #apply job
 @app.route('/jobseeker/<username>/applyjob',methods=['POST'])
 def apply_job(username):
-  jobid=request.form['job_id']
-  if jobid=='':
-    return render_template('applyjob_invalid.html')
+  jobid=int(request.form['job_id'])
   cursor=g.conn.execute("select j.jobseeker_id from jobseeker as j, person as p where j.user_id=p.user_id and p.username=%s",username)
   jid=cursor.first()[0]
   pair=(jid,jobid)
