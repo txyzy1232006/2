@@ -399,10 +399,17 @@ def search_j(username):
   jobs=cur.fetchall()
   cur.close()
   e_name=[]
+  data=[]
   for n in jobs:
-    cur=conn.execute("select name from employer where employer_id=%s;",n[0])
+    b=n[:]
+    cur=conn.execute("select name from employer where employer_id=%s;",b[0])
     name=cur.first()[0]
-    e_name.append(name)
+    b1=[]
+    b1.append(name)
+    for i in range(1,len(b)):
+        b1.append(b[i])
+    data.append(b1)
+    
   return render_template('jobsearch.html',**locals())
     
   
@@ -445,11 +452,7 @@ def apply(username):
     applications.append([a,b,c,d])
     interviews.append([a,b,c,e])
   return render_template('application_j.html',**locals())
-  
-  
-  
-  
-  return render_template('application_j.html',)
+
   
   
 
@@ -477,7 +480,6 @@ def application(username):pass
 @app.route('/editstatus')
 def edit():pass
 
-           
            
            
            
