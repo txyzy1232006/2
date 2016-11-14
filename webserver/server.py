@@ -730,7 +730,7 @@ def search_r(username):
   data=[]
   for n in res:
     b=n[:]
-    cur=g.conn.execute("select p.username from jobseeker j,person p where jobseeker_id=%s;",b[1])
+    cur=g.conn.execute("select p.username from jobseeker j,person p where p.user_id=j.user_id and jobseeker_id=%s;",b[1])
     name=cur.first()[0]
     b1=[]
     b1.append(name)
