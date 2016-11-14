@@ -55,7 +55,7 @@
 		{% for col in row %}
 
 		<td>{{col}}</td>
-	    		{% endfor %}
+	    {% endfor %}
 
 	</tr>
 
@@ -85,7 +85,13 @@
 
             <td><label for="addname">Username：</label></td>
 
-            <td><input type="text" id="addname" name="addname" /></td>
+			<td>
+			<select name="addname">
+			{% for i in j_name %}
+			<option value="{{i}}">{{i}}</option>
+			{% endfor %}
+	        </select>
+			</td>
 
             <td><input type="submit" value="add"/></td>
 
