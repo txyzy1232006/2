@@ -260,7 +260,6 @@ def list(username):
   uid=cursor.first()[0]
   cursor=g.conn.execute("select * from friendlist where user_id=%s;",uid)
   friends=cursor.first()
-  print friends
   if friends==None:
     update_time=''
     friendlist=''
@@ -731,7 +730,7 @@ def search_r(username):
   data=[]
   for n in res:
     b=n[:]
-    cur=conn.execute("select p.username from jobseeker j,person p where jobseeker_id=%s;",b[1])
+    cur=g.conn.execute("select p.username from jobseeker j,person p where jobseeker_id=%s;",b[1])
     name=cur.first()[0]
     b1=[]
     b1.append(name)
