@@ -290,7 +290,7 @@ def update_e(username):
     cursor=g.conn.execute("select %s like '19__-__-__';",birthday)
     birthvalid=cursor.first()[0]
     if type(field)!=str or type(selfintro)!=str or birthvalid == True:
-      return render_template("profileinvalid.html")
+      return render_template("profileinvalid.html",username=username)
     else:        
      g.conn.execute("update Profile_update set update_time=timestamp'%s' where user_id=%s;",(updatetime,uid))
       if birthday!=None:
@@ -299,7 +299,7 @@ def update_e(username):
          g.conn.execute("update Profile_update set field=%s where user_id=%s;",(field,uid))
       if selfintro!=None:
          g.conn.execute("update Profile_update set self_introduction=%s where user_id=%s;",(field,uid))
-      return render_template("profilesus.html")
+      return render_template("profilesus.html",username=username)
  
 
            
