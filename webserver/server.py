@@ -657,7 +657,7 @@ def edit(username):
   
 
 #search resume
-@app.route('/employer/<username>/search','methods=['POST'])
+@app.route('/employer/<username>/search',methods=['POST'])
 def search_r(username):
   cursor=g.conn.execute("select e.employer_id from employer as e, person as p where e.user_id=p.user_id and p.username=%s",username)
   eid=cursor.first()[0]
