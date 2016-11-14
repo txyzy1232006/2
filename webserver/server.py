@@ -415,7 +415,7 @@ def viewr():
   return render_template("viewresume.html",**locals())
 
 #add follow resume
-@app.route('/employer/<username>/addfollow')
+@app.route('/employer/<username>/addfollow',methods=['POST'])
 def addfollow(username):
   newname = request.form['addname']
   cursor = g.conn.execute("SELECT username FROM person")
