@@ -210,9 +210,8 @@ def viewp():
     self_introduction=None
     field=None
   else:
-    update_time=profile[1]
-    birthday=profile[2]
-    self_introduction=profile[4]
+     update_time=profile[1]
+    birthday=profile[2]    self_introduction=profile[4]
     field=profile[5]
   return render_template("viewprofile.html",**locals())
   
@@ -221,9 +220,8 @@ def viewp():
 @app.route('/friendlist/<username>/add',methods=['POST'])
 def add_f(username):
   newname = request.form['addname']
-  cursor = g.conn.execute("SELECT username FROM person")
-  allnames = []
-  for result in cursor:
+   cursor = g.conn.execute("SELECT username FROM person")
+  allnames = []  for result in cursor:
     allnames.append(result[0])  # can also be accessed using result[0]
   cursor.close()
   if newname not in allnames:
@@ -232,7 +230,7 @@ def add_f(username):
     cursor=g.conn.execute("select user_id from person where username=%s;",username)
     uid=cursor.first()[0]
     cursor=g.conn.execute("select * from friendlist where user_id=%s;",uid)
-    friends=cursor.first()  
+     friends=cursor.first()  
     friendlist=friends[2]
     a=friendlist.split(',')
     a.append(newname)
@@ -273,18 +271,60 @@ def profile_update(username):
            
 #jobs of an employer
 @app.route('/employer/<username>/job')
-def job_posted(username):pass
+def job_posted(username):
+  cursor=g.conn.execute("select user_id from person where username=%s;",username)
+  eid=cursor.first()[0]
+  cursor.close()  
+  cursor=g.conn.execute("select * from job_posted  where employer_id=%s;",eid)
+  s=cursor.fetchall()
+  cursor.close()
+  jobs = []
+  jidlist=[]
+  for result in s:
+    b=result[:]
+    jidlist.append(b[2])
+    b1=[]
+    for i in range(1,len(b)):
+        b1.append(b[i])
+    jobs.append(b1)
+  return render_template("employer_job.html",**locals())
            
        
 #post new job
-@app.route('/employer/<username>/postjob')
-def add_j(username):pass
-           
+@app.route('/employer/<username>/postjob',methods=['POST'])
+def add_j(username):
+  cursor=g.conn.execute("select user_id from person where username=%s;",username)
+  eid=cursor.first()[0]
+  cursor.close() 
+  catagory=request.form['type']
+  employer=request.form['employer']
+  title=request.form['title']
+  location=request.form['location']
+  salary1=request.form['salary']
+  if not str.isdigit(salary1):
+    return render_template('jobpost_invalid.html',name=username)
+  else:
+    salary=int(salary1)
+     #new job_id
+    record1 = g.conn.execute("select max(job_id)+1 from job_posted")
+    record=record1.fetchone()
+    jid=record[0]
+    record1.close()
+    time=g.conn.execute("select current_date;")
+    updatetime=time.first()[0]
+    cmd = 'INSERT INTO job_posted VALUES (:eid1, :ptime1, :jid1, :title1, :location1,:salary1,:catagory1,:description1)';
+    g.conn.execute(text(cmd), :eid1=eid, :ptime1=updatetime, :jid1=jid, :title1=title, :location1=location,:salary1=salary,:catagory1=catagory,:description1=description);
+    return render_template('jobpost_sus.html',name=username)
   
 #delete job
-@app.route('/employer/<username>/deletejob')
-def delete_j(username):pass
-
+@app.route('/employer/<username>/deletejob',methods=['POST'])
+def delete_j(username):
+  cursor=g.conn.execute("select user_id from person where username=%s;",username)
+  eid=cursor.first()[0]
+  cursor.close() 
+  deljid= request.form['deljid']
+  g.conn.execute("delete from job_posted where employer_id=%s and job_id=%s;",(eid,deljid))
+  return render_template('jobpost_sus.html',name=username)
 
 #all jobs for employer
 @app.route('/job')
