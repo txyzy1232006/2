@@ -643,7 +643,7 @@ def edit(username):
           return render_template('status_invalid.html')
   #check end
   g.conn.execute("update applyjob set status=%s where job_id=%s and jobseeker_id=%s;",(status, jobid,jid))
-  if status=='interview' and s='apply':
+  if status=='interview' and s=='apply':
     cur=g.conn.execute("select employer_id from job_posted where job_id=%s;",jobid)
     eid=cur.first()[0]
     cur=g.conn.execute("select max(interview_id)+1 from interview;")
