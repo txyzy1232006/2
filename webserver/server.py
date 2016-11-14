@@ -65,7 +65,7 @@ def sign():
         if a==None:
           return render_template("signinerror.html")
         else:                  
-          return redirect('/employer/%s', username)
+          return redirect('/employer/%s'%username)
       else:
         cur=g.conn.execute("select j.* from jobseeker as j, person as p  where j.user_id=p.user_id and p.username=%s;",username)
         print cur
@@ -73,7 +73,7 @@ def sign():
         if a==None:
           return render_template("signinerror.html")
         else:
-          return redirect('/jobseeker/%s', username)  
+          return redirect('/jobseeker/%s'%username)  
     else: 
       return render_template("signinerror.html")
 
@@ -247,11 +247,13 @@ def list(username):
   friends=cursor.first()
   print friends
   if friends==None:
-    update_time_f=''
+    update_time=''
     friendlist=''
+    a=''
   else:
-    update_time_f=friends[1]
+    update_time=friends[1]
     friendlist=friends[2]
+    a=friendlist.split(',')
     return render_template("friendlist.html",**locals())
   
 #view profile
@@ -290,6 +292,14 @@ def add_f(username):
     cursor=g.conn.execute("select user_id from person where username=%s;",username)
     uid=cursor.first()[0]
     cursor=g.conn.execute("select * from friendlist where user_id=%s;",uid)
+    friends=cursor.first()
+    friendlist=friends[2]
+    a=friendlist.split(',')
+    if newname in a:
+      return render_template('frienderror1.html',name=username,username=newname)
+    cursor=g.conn.execute("select user_id from person where username=%s;",username)
+    uid=cursor.first()[0]
+    cursor=g.conn.execute("select * from friendlist where user_id=%s;",uid)
     friends=cursor.first()  
     friendlist=friends[2]
     a=friendlist.split(',')
@@ -313,7 +323,7 @@ def delete_f(username):
   if oldname not in a:
     return render_template('frienderror.html',name=username,username=oldname)
   else:
-    a.remove(old)
+    a.remove(oldname)
     content = ",".join(a)
     time=g.conn.execute("select current_date;")
     updatetime=time.first()[0]
