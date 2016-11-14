@@ -92,7 +92,6 @@ def add():
   email = request.form['email']
   password = request.form['password']
   usertype = request.form['usertype']
-  name=request.form['name']
   start=username[0]
   #username exists
   cursor = g.conn.execute("SELECT username FROM person;")
@@ -130,7 +129,7 @@ def add():
       else:
         recorde = g.conn.execute("select max(employer_id)+1 from employer")
         eid=recorde.first()[0]
-        g.conn.execute("insert into employer values (:uid1, :eid1,:name1)", uid1=uid, eid1=eid, name1=name)
+        g.conn.execute("insert into employer values (:uid1, :eid1,:name1)", uid1=uid, eid1=eid, name1=username)
       return render_template("sus.html")
 
 
