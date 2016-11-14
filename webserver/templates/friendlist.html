@@ -20,9 +20,9 @@
     <div id="friend" style="background-color:#EEEEEE;height:50px;width:150px;float:left;text-align:center;">
         <b>friends</b>
     </div>
-    <div id="friend_content" style="background-color:#F5DEB3;height:50px;width:550px;float:left;">
+    <div id="birthday_content" style="background-color:#F5DEB3;height:50px;width:550px;float:left;">
         {{friendlist}}
-	    </div>
+	</div>
     	<div id="footer" style="background-color:#FFA500;clear:both;text-align:center;">{{username}}
 	</div>
 </div>
@@ -31,11 +31,34 @@
 	    View friend's profile
         <tr>
             <td><label for="proname">Username of friend：</label></td>
-            <td><input type="text" id="proname" name="proname" /></td>
+			<td>
+			<select name="proname">
+			{% for i in a %}
+			<option value="{{i}}">{{i}}</option>
+			{% endfor %}
+	        </select>
+			</td>
             <td><input type="submit" value="view"/></td>
         </tr>
     </table>
 </form> 
+
+<form action="/friendlist/{{username}}/delete" method="post">
+    <table>
+	    Not friend any more? delete here
+        <tr>
+            <td><label for="delname">Username：</label></td>
+			<td>
+			<select name="delname">
+			{% for i in a %}
+			<option value="{{i}}">{{i}}</option>
+			{% endfor %}
+	        </select>
+            <td><input type="submit" value="delete"/></td>
+        </tr>
+    </table>
+</form> 
+
 <form action="/friendlist/{{username}}/add" method="post">
     <table>
 	    New friend? add here
@@ -46,17 +69,6 @@
         </tr>
     </table>
 </form> 
-<form action="/friendlist/{{username}}/delete" method="post">
-    <table>
-	    Not friend any more? delete here
-        <tr>
-            <td><label for="delname">Username：</label></td>
-            <td><input type="text" id="delname" name="delname" /></td>
-            <td><input type="submit" value="delete"/></td>
-        </tr>
-    </table>
-</form> 
-
 
 
 <table width="700" border="0">
