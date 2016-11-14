@@ -218,7 +218,7 @@ def profileupdate(username):
     selfintro=request.form['Self introduction']
     time=g.conn.execute("select current_date;")
     updatetime=time.first()[0]
-    g.conn.execute("update Profile_update set update_time=timestamp'%s' where user_id=%s;",(updatetime,uid))
+    g.conn.execute("update Profile_update set update_time=timestamp %s where user_id=%s;",(updatetime,uid))
     #Check update valid
     if birthday!=None:
       cursor=g.conn.execute("select %s like '19__-__-__';",birthday)
@@ -230,7 +230,7 @@ def profileupdate(username):
         if not str.isdigit(b[0]) or not str.isdigit(b[1]) or not str.isdigit(b[2]):
           return render_template("profileinvalid.html",username=username)
         else:
-          g.conn.execute("update Profile_update set birthday=timestamp'%s' where user_id=%s;",(birthday,uid))
+          g.conn.execute("update Profile_update set birthday=timestamp %s where user_id=%s;",(birthday,uid))
     if field!=None:
       g.conn.execute("update Profile_update set field=%s where user_id=%s;",(field,uid))
     if selfintro!=None:
@@ -369,8 +369,8 @@ def add_j(username):
     jid=jid+1
   time=g.conn.execute("select current_date;")
   updatetime=time.first()[0]
-  cmd = 'INSERT INTO job_posted VALUES (:eid1, :ptime1, :jid1, :title1, :location1,:salary1,:catagory1,:description1)';
-  g.conn.execute(text(cmd), :eid1=eid, :ptime1=updatetime, :jid1=jid, :title1=title, :location1=location,:salary1=salary,:catagory1=catagory,:description1=description);
+  cmd = 'INSERT INTO job_posted VALUES (%s, timestamp %s, %s, %s, %s, %s, %s ,%s);';
+  g.conn.execute(text(cmd),(eid, updatetime, jid, title, location, salary, catagory, description));
   return render_template('jobpost_sus.html',name=username)
            
 #delete job
@@ -650,7 +650,7 @@ def edit(username):
     iid=cur.first()[0]
     g.conn.execute("insert into interview values (%s,timestamp %s, %s, %s, %s);",(iid, time, eid, jid, jobid))
   else:
-    g.conn.execute("update interview set time=timestamp%s where jobseeker_id=%s and job_id=%s",(time,jid,jobid))
+    g.conn.execute("update interview set time=timestamp %s where jobseeker_id=%s and job_id=%s",(time,jid,jobid))
   return render_template('status_sus.html')
     
   
