@@ -355,8 +355,60 @@ def resume_update(username):
 
            
 #search job
-@app.route('/jobseeker/<username>/search')
-def search_j(username):pass
+@app.route('/jobseeker/<username>/search',methods=['POST'])
+def search_j(username):
+  cursor=g.conn.execute("select j.jobseeker_id from jobseeker as j, person as p where j.user_id=p.user_id and p.username=%s",username)
+  jid=cursor.first()[0]
+  catagory=request.form['type']
+  employer=request.form['employer']
+  title=request.form['title']
+  location=request.form['location']
+  salary=request.form['salary']
+  where=[]
+  m=[]
+  c=' catagory=%s'
+  where.append(c)
+  m.append(catagory)
+  if employer!=None:
+    e=' employer like %s'
+    where.append(e)
+    emp='%'+employer+'%'
+    m.append(emp)
+  if title!=None:
+    t=' title like %s'
+    where.append(t)
+    tit='%'+title+'%'
+    m.append(tit)
+  if location!=None:
+    l=' location like %s'
+    where.append(l)
+    loc='%'+location+'%'
+    m.append(loc)
+  if salary!=None:
+    s=' salary>%s'
+    where.append(s)
+    m.append(salary)
+  w=where[0]
+  i=1
+  while i<len(where):
+    w=w+' and'+where[i]
+    i+=1
+  c='select * from job_posted where'
+  cmd=c+w+';'
+  cur=g.conn.execute(cmd,m)
+  jobs=cur.fetchall()
+  cur.close()
+  e_name=[]
+  for n in jobs:
+    cur=conn.execute("select name from employer where employer_id=%s;",n[0])
+    name=cur.first()[0]
+    e_name.append(name)
+  return render_template('jobsearch.html',**locals())
+    
+  
+  
+  
+  
            
            
 #apply job
