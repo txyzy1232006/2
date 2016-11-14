@@ -676,8 +676,10 @@ def edit(username):
     cur=g.conn.execute("select max(interview_id)+1 from interview;")
     iid=cur.first()[0]
     g.conn.execute("insert into interview values (%s,timestamp %s, %s, %s, %s);",(iid, time, eid, jid, jobid))
-  else:
-    g.conn.execute("update interview set time=timestamp %s where jobseeker_id=%s and job_id=%s",(time,jid,jobid))
+  elif status=='interview' and s=='interview':
+    g.conn.execute("update interview set time=timestamp %s where jobseeker_id=%s and job_id=%s;",(time,jid,jobid))
+  elif status=='employed' and s=='interview':
+    g.conn.execute("delete from interview where jobseeker_id=%s and job_id=%s;", (jid,jobid))
   return render_template('status_sus.html')
     
   
