@@ -377,7 +377,10 @@ def search_j(username):
   employer=request.form['employer']
   title=request.form['title']
   location=request.form['location']
-  salary=int(request.form['salary'])
+  salary1=request.form['salary']
+  if not str.isdigit(salary1):
+    return render_template('jobsearch_invalid.html')
+  salary=int(salary1)
   where=[]
   m=[]
   c=' catagory=%s'
@@ -431,7 +434,7 @@ def search_j(username):
 #apply job
 @app.route('/jobseeker/<username>/applyjob',methods=['POST'])
 def apply_job(username):
-  jobid=int(request.form['job_id'])
+  jobid=request.form['job_id']
   cursor=g.conn.execute("select j.jobseeker_id from jobseeker as j, person as p where j.user_id=p.user_id and p.username=%s",username)
   jid=cursor.first()[0]
   pair=(jid,jobid)
