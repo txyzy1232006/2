@@ -95,7 +95,7 @@ def add():
   name=request.form['name']
   start=username[0]
   #username exists
-  cursor = g.conn.execute("SELECT username FROM person")
+  cursor = g.conn.execute("SELECT username FROM person;")
   allnames = []
   for result in cursor:
     allnames.append(result[0])  # can also be accessed using result[0]
@@ -103,17 +103,18 @@ def add():
   #username exists end
   #
   #email exists
-  cursor1 = g.conn.execute("SELECT email FROM person")
+  cursor1 = g.conn.execute("SELECT email FROM person;")
   allemails = []
   for result in cursor1: 
     allemails.append(result[0])  # can also be accessed using result[0]
   cursor1.close()
   #email exists end
+  
   if username in allnames or email in allemails:
     return render_template("signuperror.html")
   else:
     #Check username valid
-    if type(start)!=str or '@' not in email:
+    if type(start)!=str or '@' not in email or email.count('@')!=1 or len(username)>5 or len(password)>7:
       return render_template("signupinvalid.html")
     else:        
       #new user_id
