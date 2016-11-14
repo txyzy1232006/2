@@ -463,7 +463,7 @@ def deletefollow(username):
     oldid=record[0]
     cur.close()
     g.conn.execute("delete from follow where employer_id=%s and resume_id=%s;",(eid,oldid))
-    return render_template('friendsus.html',name=username)
+    return render_template('followsus.html',name=username)
            
 #view application and interview for employer
 @app.route('/employer/<username>/application')
