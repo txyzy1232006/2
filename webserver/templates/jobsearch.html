@@ -4,7 +4,7 @@
       font-size: 15pt;
       font-family: arial;
     }
-  </style>
+  </style> 
 
 <body>
 <h1>Search job</h1>
@@ -39,7 +39,7 @@
 </table>
 
 <h2 style="color:red"> Apply a job!</h2>
-<form action="/jobseeker/<username>/applyjob" target="_blank" method="post">
+<form action="/jobseeker/{{username}}/applyjob" target="_blank" method="post">
     Choose the job id of the job you want to apply for
 	<select name="job_id">
 	{% for n in alljid %}
