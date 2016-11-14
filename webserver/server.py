@@ -433,6 +433,8 @@ def search_j(username):
 @app.route('/jobseeker/<username>/applyjob',methods=['POST'])
 def apply_job(username):
   jobid=request.form['job_id']
+  if jobid==None:
+    return render_template('applyjob_invalid.html')
   cursor=g.conn.execute("select j.jobseeker_id from jobseeker as j, person as p where j.user_id=p.user_id and p.username=%s",username)
   jid=cursor.first()[0]
   pair=(jid,jobid)
@@ -447,13 +449,6 @@ def apply_job(username):
     g.conn.execute("insert into applyjob values (%s,%s,'apply',%s);",new)
     return render_template('applyjob_sus.html',username=username)
   
-  
-  
-  
-  
-  
-  
-  
            
 #view job apply and interview for jobseeker
 @app.route('/jobseeker/<username>/status')
@@ -461,31 +456,52 @@ def apply(username):
   cur=g.conn.execute("select a.* from jobseeker as j, person as p, applyjob as a where a.jobseeker_id=j.jobseeker_id and j.user_id=p.user_id and p.username=%s;",username)
   s=cur.fetchall()
   cur.close()
-  info=[]
+  applications=[]
   for m in s:
     cursor=g.conn.execute("select e.name,j.title from job_posted as j,employer as e where j.job_id=%s and e.employer_id=%s;",(m[1],m[3]))
     n=cursor.first()
-    info.append(n)
-    cursor.close()
-  time=[]
+    applications.append((m[1],n[0],n[1],m[2]))
+  interviews=[]
   for m in s:
     if m[2]=='interview':
-        cursor=conn.execute("select time from interview where job_id=%s and employer_id=%s and jobseeker_id=%s;",(m[1],m[3],m[0]))
-        t=cursor.first()[0]
-        time.append(t)   
-  applications=[]
-  interviews=[]
-  for i in range(0,len(m1)) :
-    a=m1[i][1]
-    b=info[i][0]
-    c=info[i][1]
-    d=m1[i][2]
-    e=time[i]
-    applications.append([a,b,c,d])
-    interviews.append([a,b,c,e])
+        cursor=g.conn.execute("select e.name,j.title from job_posted as j,employer as e where j.job_id=%s and e.employer_id=%s;",(m[1],m[3]))
+        n=cursor.first()
+        cursor=g.conn.execute("select time from interview where job_id=%s and employer_id=%s and jobseeker_id=%s;",(m[1],m[3],m[0]))
+        n2=cursor.first()[0]
+        interviews.append((m[1],n[0],n[1],n2))
   return render_template('application_j.html',**locals())
 
+
+#view application and interview for employer
+@app.route('/employer/<username>/application')
+def application(username):
+  cur=g.conn.execute("select a.* from employer as e, person as p, applyjob as a where a.employer_id=e.employer_id and e.user_id=p.user_id and p.username=%s;",username)
+  s=cur.fetchall()
+  cur.close()
+  applications=[]
+  for m in s:
+    cursor=g.conn.execute("select p.username from jobseeker as j,person as p where j.jobseeker_id=%s and p.user_id=j.user_id;",m[0])
+    n=cursor.first()[0]
+    cursor=g.conn.execute("select title from job_posted where job_id=%s;",m[1])
+    n1=cursor.first()[0]
+    applications.append((m[1],n1,n,m[2]))
+  interviews=[]
+  for m in s:
+    if m[2]=='interview':
+        cursor=g.conn.execute("select p.username from jobseeker as j,person as p where j.jobseeker_id=%s and p.user_id=j.user_id;",m[0])
+        n=cursor.first()[0]
+        cursor=g.conn.execute("select title from job_posted where job_id=%s;",m[1])
+        n1=cursor.first()[0]
+        cursor=g.conn.execute("select time from interview where job_id=%s and employer_id=%s and jobseeker_id=%s;",(m[1],m[3],m[0]))
+        n2=cursor.first()[0]
+        interviews.append((m[1],n1,n,n2))
+  return render_template('application_e.html',**locals())
   
+           
+           
+#edit status of application
+@app.route('/editstatus/<username>') 
+def edit(username):pass
   
 
 #search resume
@@ -503,14 +519,8 @@ def resume_followed(username):pass
 def follow(username):pass
 
            
-#view application and interview for employer
-@app.route('/employer/<username>/application')
-def application(username):pass
-           
-           
-#edit status of application
-@app.route('/editstatus')
-def edit():pass
+
+
 
            
            
@@ -518,7 +528,7 @@ def edit():pass
            
            
            
-           
+
            
 if __name__ == "__main__":
   import click
