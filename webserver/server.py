@@ -499,7 +499,7 @@ def search_j(username):
   salary=int(salary1)
   where=[]
   m=[]
-  c=' catagory=%s'
+  c=' j.catagory=%s'
   where.append(c)
   m.append(catagory)
   if employer!='':
