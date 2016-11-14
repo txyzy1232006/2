@@ -1,7 +1,6 @@
 <html>
 
   <style>
-
     body{ 
 
       font-size: 15pt;
@@ -28,9 +27,7 @@
     <div id="resume" style="background-color:#EEEEEE;height:50px;width:150px;float:left;text-align:center;">
 
         <b>resumes</b>
-
     </div>
-
     <div id="resumelist" style="background-color:#F5DEB3;height:50px;width:550px;float:left;">
 
         {{resumelist}}
@@ -42,16 +39,16 @@
 </div>
 
 <form action="/viewresume" target="_blank" method="post">
-
-    <table>
-
-	    View Resumes you followed
-
-        <tr>
-
-            <td><label for="proid">ID of the resume：</label></td>
-
-            <td><input type="text" id="proid" name="proid" /></td>
+	<table>
+		View Resumes you followed
+	<tr>
+           <td><label for="proname">Jobseeker of the resume：</label></td>
+           <td><select id="proname" name="proname" >
+	       {% for name in resumelist %}	    
+	       <option value="{{name}}">{{name}}</option>
+		{% endfor %}
+	        </select>
+	    </td>
 
             <td><input type="submit" value="view"/></td>
 
@@ -91,8 +88,12 @@
 
             <td><label for="delname">Username：</label></td>
 
-            <td><input type="text" id="delname" name="delname" /></td>
-
+            <td><select id="delname" name="delname" >
+	       {% for name in resumelist %}	    
+	       <option value="{{name}}">{{name}}</option>
+		{% endfor %}
+	        </select>
+            </td>
             <td><input type="submit" value="delete"/></td>
 
         </tr>
@@ -116,11 +117,6 @@
   </tr>
 
 </table>
-
-
-
-
-
 
 
 
