@@ -802,7 +802,7 @@ def addfollow(username):
   for row in cursor:
     resumelist.append(row[0])
   cursor.close()
-  if newname in resumelist1:
+  if newname in resumelist:
     return render_template('followerror1.html',name=username,username=newname)
   else:
     cur=g.conn.execute("select r.resume_id from resume_updated as r,person as p,jobseeker as j where r.jobseeker_id=j.jobseeker_id and j.user_id=p.user_id and p.username=%s;",newname)
