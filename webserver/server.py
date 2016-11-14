@@ -93,6 +93,7 @@ def add():
   password = request.form['password']
   usertype = request.form['usertype']
   if username=='' or firstname=='' or lastname=='' or email=='' or password=='':
+    print username, firstname, lastname, email, password
     return render_template("signupinvalid.html")
   start=username[0]
   #username exists
@@ -116,6 +117,7 @@ def add():
   else:
     #Check username valid
     if type(start)!=str or email.count('@')!=1 or len(username)<6 or len(password)<8:
+      print type(start), email.count('@'), len(username), len(password)
       return render_template("signupinvalid.html")
     else:        
       #new user_id
