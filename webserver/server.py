@@ -320,15 +320,12 @@ def delete_f(username):
   friends=cursor.first()
   friendlist=friends[2]
   a=friendlist.split(',')
-  if oldname not in a:
-    return render_template('frienderror.html',name=username,username=oldname)
-  else:
-    a.remove(oldname)
-    content = ",".join(a)
-    time=g.conn.execute("select current_date;")
-    updatetime=time.first()[0]
-    g.conn.execute("update friendlist set update_time=timestamp %s,username=%s where user_id=%s;",(updatetime,content,uid))
-    return render_template('friendsus.html',name=username)
+  a.remove(oldname)
+  content = ",".join(a)
+  time=g.conn.execute("select current_date;")
+  updatetime=time.first()[0]
+  g.conn.execute("update friendlist set update_time=timestamp %s,username=%s where user_id=%s;",(updatetime,content,uid))
+  return render_template('friendsus.html',name=username)
 
   
 #jobs of an employer
