@@ -211,8 +211,7 @@ def viewp():
   return render_template("viewprofile.html",**locals())
   
 
-#add friend
-@app.route('/friendlist/<username>/add',methods=['POST'])
+#add friend@app.route('/friendlist/<username>/add',methods=['POST'])
 def add_f(username):
   newname = request.form['addname']
   cursor = g.conn.execute("SELECT username FROM person")
@@ -257,8 +256,8 @@ def delete_f(username):
     return render_template('friendsus.html')
            
 #update employer profile
-@app.route('/employer/<username>/update')
-def update_e(username):
+@app.route('/employer/<username>/profile')
+def profile_e(username):
    cursor=g.conn.execute("select user_id from person where username='%s';",username)
     uid=cursor.first()[0]
     cur=g.conn.execute("select * from profile_update where user_id=%s;",uid)
@@ -274,7 +273,34 @@ def update_e(username):
       self_introduction=profile[4]
       field=profile[5]
     
-  return render_template("employer/update.html",**locals())
+  return render_template("employer/profile.html",**locals())
+
+#add update employer profile
+@app.route('/employer/<username>/profile/update',methods=['POST'])
+def update_e(username):
+    cursor=g.conn.execute("select user_id from person where username='%s';",username)
+    uid=cursor.first()[0]
+    cursor.close()
+    birthday=request.form['birthday']
+    field=request.form['Field']
+    selfintro=request.form['Self introduction']
+    time=g.conn.execute("select current_date;")
+    updatetime=time.first()[0]
+    #Check update valid
+    cursor=g.conn.execute("select %s like '19__-__-__';",birthday)
+    birthvalid=cursor.first()[0]
+    if type(field)!=str or type(selfintro)!=str or birthvalid == True:
+      return render_template("profileinvalid.html")
+    else:        
+     g.conn.execute("update Profile_update set update_time=timestamp'%s' where user_id=%s;",(updatetime,uid))
+      if birthday!=None:
+        g.conn.execute("update Profile_update set birthday=timestamp'%s' where user_id=%s;",(birthday,uid))
+      if field!=None:
+         g.conn.execute("update Profile_update set field=%s where user_id=%s;",(field,uid))
+      if selfintro!=None:
+         g.conn.execute("update Profile_update set self_introduction=%s where user_id=%s;",(field,uid))
+      return render_template("profilesus.html")
+ 
 
            
 #update jobseeker profile
