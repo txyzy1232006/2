@@ -568,7 +568,7 @@ def apply_job(username):
     return render_template('applyjob_sus.html',username=username)
   
            
-#view job apply and interview for jobseeker
+#view application and interview for jobseeker
 @app.route('/jobseeker/<username>/status')
 def apply(username):
   cur=g.conn.execute("select a.* from jobseeker as j, person as p, applyjob as a where a.jobseeker_id=j.jobseeker_id and j.user_id=p.user_id and p.username=%s;",username)
