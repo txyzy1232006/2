@@ -811,7 +811,7 @@ def addfollow(username):
     return render_template('followsus.html',name=username)
 
 #delete follow resume
-@app.route('/employer/<username>/deletefollow')
+@app.route('/employer/<username>/deletefollow',methods=['POST'])
 def deletefollow(username):
   cursor=g.conn.execute("select e.employer_id from person as p,employer as e where p.user_id=e.user_id and p.username=%s;",username)
   eid=cursor.first()[0]
