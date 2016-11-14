@@ -671,14 +671,17 @@ def edit(username):
   #check end
   g.conn.execute("update applyjob set status=%s where job_id=%s and jobseeker_id=%s;",(status, jobid,jid))
   if status=='interview' and s=='apply':
+    print 1
     cur=g.conn.execute("select employer_id from job_posted where job_id=%s;",jobid)
     eid=cur.first()[0]
     cur=g.conn.execute("select max(interview_id)+1 from interview;")
     iid=cur.first()[0]
     g.conn.execute("insert into interview values (%s,timestamp %s, %s, %s, %s);",(iid, time, eid, jid, jobid))
   elif status=='interview' and s=='interview':
+    print 2
     g.conn.execute("update interview set time=timestamp %s where jobseeker_id=%s and job_id=%s;",(time,jid,jobid))
   elif status=='employed' and s=='interview':
+    print 3
     g.conn.execute("delete from interview where jobseeker_id=%s and job_id=%s;", (jid,jobid))
   return render_template('status_sus.html')
     
