@@ -114,7 +114,7 @@ def add():
     return render_template("signuperror.html")
   else:
     #Check username valid
-    if type(start)!=str or '@' not in email or email.count('@')!=1 or len(username)>5 or len(password)>7:
+    if type(start)!=str or '@' not in email or email.count('@')>1 or len(username)>5 or len(password)>7:
       return render_template("signupinvalid.html")
     else:        
       #new user_id
@@ -355,15 +355,19 @@ def resume_update(username):
   if address!=None:
     g.conn.execute("update resume_updated set address=%s where jobseeker_id=%s;",(address,jid))
   if email!=None:
-    if '@' not in email:
+    if '@' not in email and email.count('@')>1:
       return render_template('update_resume_error.html',username=username)
     else:
       g.conn.execute("update resume_updated set email=%s where jobseeker_id=%s;",(email,jid))
   if number!=None:
-    if number[3]!='-' or number[7]!='-':
+    if number[3]!='-' or number[7]!='-' or number.count('-')>2:
       return render_template('update_resume_error.html',username=username)
     else:
-      g.conn.execute("update resume_updated set phone_number=%s where jobseeker_id=%s;",(number,jid))
+      n=number.split('-')
+      if not str.isdigit(n[0])  or  not str.isdigit(n[1]) or not str.isdigit(n[1]):
+        return render_template('update_resume_error.html',username=username)
+      else:
+        g.conn.execute("update resume_updated set phone_number=%s where jobseeker_id=%s;",(number,jid))
   return render_template('update_resume_sus.html')
 
            
@@ -420,7 +424,7 @@ def search_j(username):
   for n in jobs:
     b=n[:]
     alljid.append(b[2])
-    cur=conn.execute("select name from employer where employer_id=%s;",b[0])
+    cur=g.conn.execute("select name from employer where employer_id=%s;",b[0])
     name=cur.first()[0]
     b1=[]
     b1.append(name)
@@ -536,7 +540,7 @@ def edit(username):
     return render_template('status_invalid.html')
   else:
     t=time.split('-')
-    if str.isdigit(t[0]) or str.isdigit(t[1]) or str.isdigit(t[2]):
+    if not str.isdigit(t[0]) or not str.isdigit(t[1]) or not str.isdigit(t[2]):
       return render_template('status_invalid.html')
     else:
       if int(t[0])<2016 or int(t[1])>12 or int(t[1])<1 or int(t[2])<1 or int(t[2])>30:
