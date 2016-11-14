@@ -479,12 +479,18 @@ def application(username):
   s=cur.fetchall()
   cur.close()
   applications=[]
+  alljid=[]
+  allname=[]
   for m in s:
     cursor=g.conn.execute("select p.username from jobseeker as j,person as p where j.jobseeker_id=%s and p.user_id=j.user_id;",m[0])
     n=cursor.first()[0]
     cursor=g.conn.execute("select title from job_posted where job_id=%s;",m[1])
     n1=cursor.first()[0]
     applications.append((m[1],n1,n,m[2]))
+    if m[1] not in alljid:
+      alljid.append(m[1])
+    if n not in allname:
+      allname.append(n)
   interviews=[]
   for m in s:
     if m[2]=='interview':
@@ -495,13 +501,64 @@ def application(username):
         cursor=g.conn.execute("select time from interview where job_id=%s and employer_id=%s and jobseeker_id=%s;",(m[1],m[3],m[0]))
         n2=cursor.first()[0]
         interviews.append((m[1],n1,n,n2))
+  
   return render_template('application_e.html',**locals())
   
            
            
 #edit status of application
-@app.route('/editstatus/<username>') 
-def edit(username):pass
+@app.route('/editstatus/<username>',methods=['POST']) 
+def edit(username):
+  job=request.form['job_id']
+  name=request.form['jobseeker']
+  status=request.form['status']
+  time=request.form['time']
+  cur=g.conn.execute("select j.jobseeker_id from jobseeker as j,person as p where p.user_id=j.user_id and p.username=%s;",name)
+  jid=cur.first()[0]
+  #check jobid and name
+  if job==None or name==None:
+    return render_template('status_invalid.html')
+  else:
+    jobid=int(job)
+    cursor=g.conn.execute("select a.job_id, p.username from applyjob as a,person as p,jobseeker as j where a.job_id=%s and a.jobseeker_id=j.jobseeker_id and j.user_id=p.user_id;",jobid)
+    pair=cursor.fetchall()
+    cursor.close()
+    if (jobid, name) not in pair:
+      return render_template('status_invalid.html')
+  #check status
+  cursor=g.conn.execute("select status from applyjob where jobseeker_id=%s and job_id=%s;",(jid,jobid))
+  s=cursor.first()[0]
+  if s=='employed':
+    return render_template('status_error.html')
+  #check time
+  if time[4]!='-' or time[7]!='-'or len(time)!=10 or time.count('-')!=2:
+    return render_template('status_invalid.html')
+  else:
+    t=time.split('-')
+    if str.isdigit(t[0]) or str.isdigit(t[1]) or str.isdigit(t[2]):
+      return render_template('status_invalid.html')
+    else:
+      if int(t[0])<2016 or int(t[1])>12 or int(t[1])<1 or int(t[2])<1 or int(t[2])>30:
+        return render_template('status_invalid.html')
+      else:
+        cur=g.conn.execute("select age(timestamp %s);",time)
+        a1=cur.first()[0]
+        cur=g.conn.execute("select extract(day from %s);",a1)
+        if cur.first()[0]>0:
+          return render_template('status_invalid.html')
+  #check end
+  g.conn.execute("update applyjob set status=%s where job_id=%s and jobseeker_id=%s;",(status, jobid,jid))
+  if status=='interview' and s='apply':
+    cur=g.conn.execute("select employer_id from job_posted where job_id=%s;",jobid)
+    eid=cur.first()[0]
+    cur=g.conn.execute("select max(interview_id)+1 from interview;")
+    iid=cur.first()[0]
+    g.conn.execute("insert into interview values (%s,timestamp %s, %s, %s, %s);",(iid, time, eid, jid, jobid))
+  else:
+    g.conn.execute("update interview set time=timestamp%s where jobseeker_id=%s and job_id=%s",(time,jid,jobid))
+  return render_template('status_sus.html')
+    
+  
   
 
 #search resume
