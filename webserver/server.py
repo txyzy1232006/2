@@ -503,22 +503,22 @@ def search_j(username):
   where.append(c)
   m.append(catagory)
   if employer!='':
-    e=' employer like %s'
+    e=' e.name like %s'
     where.append(e)
     emp='%'+employer+'%'
     m.append(emp)
   if title!='':
-    t=' title like %s'
+    t=' j.title like %s'
     where.append(t)
     tit='%'+title+'%'
     m.append(tit)
   if location!='':
-    l=' location like %s'
+    l=' j.location like %s'
     where.append(l)
     loc='%'+location+'%'
     m.append(loc)
   if salary!='':
-    s=' salary>%s'
+    s=' j.salary>%s'
     where.append(s)
     m.append(salary)
   w=where[0]
@@ -526,7 +526,7 @@ def search_j(username):
   while i<len(where):
     w=w+' and'+where[i]
     i+=1
-  c='select * from job_posted where'
+  c='select j.* from job_posted as j, employer as e where e.employer_id=j.employer_id'
   cmd=c+w+';'
   cur=g.conn.execute(cmd,m)
   jobs=cur.fetchall()
