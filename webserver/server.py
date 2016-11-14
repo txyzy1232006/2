@@ -115,7 +115,7 @@ def add():
     return render_template("signuperror.html")
   else:
     #Check username valid
-    if type(start)!=str or '@' not in email or email.count('@')>1 or len(username)<6 or len(password)<8:
+    if type(start)!=str or email.count('@')!=1 or len(username)<6 or len(password)<8:
       return render_template("signupinvalid.html")
     else:        
       #new user_id
