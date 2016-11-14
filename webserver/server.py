@@ -124,14 +124,14 @@ def add():
       #new user_id end
       cmd = 'INSERT INTO person VALUES (:username1, :uid1, :firstname1, :lastname1, :email1, :password1)';
       g.conn.execute(text(cmd), username1=username,uid1=uid, firstname1=firstname,lastname1=lastname,email1=email, password1=password);
-      if usertpye=='jobseeker':
+      if usertype=='jobseeker':
         recordj = g.conn.execute("select max(jobseeker_id)+1 from jobseeker")
         jid=recordj.first()[0]
-        g.conn.execute("insert into jobseeker values (:uid1, :jid1)", uid1=uid, jid1=jid)
+        g.conn.execute("insert into jobseeker values (%s, %s);",(uid,jid))
       else:
         recorde = g.conn.execute("select max(employer_id)+1 from employer")
         eid=recorde.first()[0]
-        g.conn.execute("insert into employer values (:uid1, :eid1,:name1)", uid1=uid, eid1=eid, name1=username)
+        g.conn.execute("insert into employer values (%s, %s,%s)",(uid,eid,username))
       return render_template("sus.html")
 
 
