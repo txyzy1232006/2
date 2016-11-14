@@ -229,23 +229,23 @@ def profileupdate(username):
       else:
         t=birthday.split('-')
         if not str.isdigit(t[0]) or not str.isdigit(t[1]) or not str.isdigit(t[2]):
-          return render_template('status_invalid.html')
+          return render_template("profileinvalid.html",username=username)
         else:
           if int(t[1])>12 or int(t[1])<1 or int(t[2])<1:
-            return render_template('status_invalid.html')
+            return render_template("profileinvalid.html",username=username)
           else:
             if int(t[1]) in (1,3,5,7,8,10,12) and int(t[2])>31:
-              return render_template('status_invalid.html')
+              return render_template("profileinvalid.html",username=username)
             elif int(t[1]) in (4,6,9,11) and int(t[2])>30:
-              return render_template('status_invalid.html')
+              return render_template("profileinvalid.html",username=username)
             elif int(t[1])==2 and int(t[2])>28:
-              return render_template('status_invalid.html')
+              return render_template("profileinvalid.html",username=username)
             else:
               cur=g.conn.execute("select age(timestamp %s);",time)
               a1=cur.first()[0]
               cur=g.conn.execute("select extract(day from %s);",a1)
               if cur.first()[0]>0:
-                return render_template('status_invalid.html')
+                return render_template("profileinvalid.html",username=username)
       g.conn.execute("update Profile_update set birthday=timestamp %s where user_id=%s;",(birthday,uid))
     if field!='':
       g.conn.execute("update Profile_update set field=%s where user_id=%s;",(field,uid))
@@ -670,7 +670,7 @@ def edit(username):
           a1=cur.first()[0]
           cur=g.conn.execute("select extract(day from %s);",a1)
           if cur.first()[0]>0:
-          return render_template('status_invalid.html')
+            return render_template('status_invalid.html')
   #check end
   g.conn.execute("update applyjob set status=%s where job_id=%s and jobseeker_id=%s;",(status, jobid,jid))
   if status=='interview' and s=='apply':
