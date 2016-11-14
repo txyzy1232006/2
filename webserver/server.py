@@ -92,6 +92,8 @@ def add():
   email = request.form['email']
   password = request.form['password']
   usertype = request.form['usertype']
+  if username==None or firstname==None or lastname==None or email==None or password==None:
+    return render_template("signupinvalid.html")
   start=username[0]
   #username exists
   cursor = g.conn.execute("SELECT username FROM person;")
