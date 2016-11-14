@@ -7,7 +7,7 @@
     }
   </style>
 
-
+<meta http-equiv="refresh" content="60">
 
 <body>
 
@@ -69,13 +69,14 @@
         {{self_introduction}}
 
 	</div>
-	<div id="footer" style="background-color:#FFA500;clear:both;text-align:center;">{{username}}
+    <div id="footer" style="background-color:#FFA500;clear:both;text-align:center;">
+
 	</div>
  
 </div>
 
 
-<form action="/profileupdate/{{username}}" method="post">
+<form action="/profileupdate/<username>" method="post">
 
     <table>
         <tr>
@@ -87,12 +88,11 @@
 
 	        <td><label for="txtfield" >Field</label></td>
 		
-        <br>
 	    <td><label for="txtself" >Self introduction</label></td>
         </tr>
 
         <tr>
-            <td><input type="text" id="txtbirthday" name="birthday" /></td>
+            <td><input type="text" id="txtbirthday" name="birthday" onfocus="this.value=''" value="YYYY-MM-DD" /></td>
 
             <td><input type="text" id="txtfield" name="Field" /></td>
         <br>
@@ -105,12 +105,12 @@
             <td colspan=2>
 
                 <input type="reset" value="reset"/>
-                <input type="submit" value="update"/>
+                <input type="submit" value="search"/>
 
             </td>
 
         </tr>
-
+    <p>Note: Date should be in form "YYYY-MM-DD", example:2016-11-14</p>
     </table>
 
 </form> 
