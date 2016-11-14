@@ -138,6 +138,20 @@ def add():
 #employer
 @app.route('/employer/<username>')
 def profile_e(username): pass
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
 
 #jobseeker
@@ -363,7 +377,7 @@ def search_j(username):
   employer=request.form['employer']
   title=request.form['title']
   location=request.form['location']
-  salary=request.form['salary']
+  salary=int(request.form['salary'])
   where=[]
   m=[]
   c=' catagory=%s'
@@ -416,8 +430,21 @@ def search_j(username):
   
 #apply job
 @app.route('/jobseeker/<username>/applyjob',methods=['POST'])
-def apply_job(username):pass
-           
+def apply_job(username):
+  jobid=int(request.form['job_id'])
+  cursor=g.conn.execute("select j.jobseeker_id from jobseeker as j, person as p where j.user_id=p.user_id and p.username=%s",username)
+  jid=cursor.first()[0]
+  pair=(jid,jobid)
+  cur=g.conn.execute("select jobseeker_id,job_id from applyjob;")
+  allpairs=cur.fetchall()
+  if pair in allpairs:
+    return render_template('applyjob_error.html',username=username)
+  else:
+    cur=g.conn.execute("select employer_id from job_posted where job_id=%s;",jobid)
+    ename=cur.first()[0]
+    new=(jid,jobid,ename)
+    g.conn.execute("insert into applyjob values (%s,%s,'apply',%s);",new)
+    return render_template('applyjob_sus.html',username=username)
   
   
   
