@@ -400,8 +400,10 @@ def search_j(username):
   cur.close()
   e_name=[]
   data=[]
+  alljid=[]
   for n in jobs:
     b=n[:]
+    alljid.append(b[2])
     cur=conn.execute("select name from employer where employer_id=%s;",b[0])
     name=cur.first()[0]
     b1=[]
@@ -409,19 +411,21 @@ def search_j(username):
     for i in range(1,len(b)):
         b1.append(b[i])
     data.append(b1)
-    
   return render_template('jobsearch.html',**locals())
     
   
-  
-  
-  
-           
-           
 #apply job
-@app.route('/jobseeker/<username>/applyjob')
+@app.route('/jobseeker/<username>/applyjob',methods=['POST'])
 def apply_job(username):pass
            
+  
+  
+  
+  
+  
+  
+  
+  
            
 #view job apply and interview for jobseeker
 @app.route('/jobseeker/<username>/status')
