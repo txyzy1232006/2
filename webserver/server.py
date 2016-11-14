@@ -488,7 +488,7 @@ def apply_job(username):
     return render_template('applyjob_sus.html',username=username)
   
   
-  
+methods=['POST']  
   
   
   
@@ -529,7 +529,7 @@ def apply(username):
   
 
 #search resume
-@app.route('/employer/<username>/searchresume')
+@app.route('/employer/<username>/searchresume,'methods=['POST'])
 def search_r(username):
   cursor=g.conn.execute("select e.employer_id from employer as e, person as p where e.user_id=p.user_id and p.username=%s",username)
   eid=cursor.first()[0]
