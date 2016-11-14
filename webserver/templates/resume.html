@@ -1,0 +1,152 @@
+<html>
+  <style>
+    body{ 
+      font-size: 15pt;
+      font-family: arial;
+    }
+  </style>
+<meta http-equiv="refresh" content="60">
+<body>
+<h1>Resume</h1>
+
+<div id="resume" style="width:700px">
+    <div id="header" style="background-color:#FFA500;">
+        <h2 style="margin-bottom:0;">Your Resume</h2>
+    </div>
+    <div id="education" style="background-color:#F5DEB3;height:50px;width:150px;float:left;text-align:center;">
+        <b>Education</b>
+    </div>
+    <div id="education_content" style="background-color:#EEEEEE;height:50px;width:550px;float:left;">
+        {{education}}
+	</div>
+    <div id="skills" style="background-color:#EEEEEE;height:50px;width:150px;float:left;text-align:center;">
+        <b>Skills</b>
+    </div>
+    <div id="skills_content" style="background-color:#F5DEB3;height:50px;width:550px;float:left;">
+        {{skills}}
+	</div>
+    <div id="volunteer" style="background-color:#F5DEB3;height:50px;width:150px;float:left;text-align:center;">
+        <b>Volunteer</b>
+    </div>
+    <div id="volunteer_content" style="background-color:#EEEEEE;height:50px;width:550px;float:left;">
+        {{volunteer}}
+	</div>
+	<div id="honor" style="background-color:#EEEEEE;height:50px;width:150px;float:left;text-align:center;">
+        <b>Honor</b>
+    </div>
+    <div id="honor_content" style="background-color:#F5DEB3;height:50px;width:550px;float:left;">
+         {{honor}}
+	</div>
+	<div id="work_experience" style="background-color:#F5DEB3;height:50px;width:150px;float:left;text-align:center;">
+        <b>Work experience</b>
+    </div>
+    <div id="work_experience_content" style="background-color:#EEEEEE;height:50px;width:550px;float:left;">
+        {{work_experience}}
+	</div>
+	<div id="certificate" style="background-color:#EEEEEE;height:50px;width:150px;float:left;text-align:center;">
+        <b>Certificate</b>
+    </div>
+    <div id="certificate_content" style="background-color:#F5DEB3;height:50px;width:550px;float:left;">
+        {{certificate}}
+	</div>
+	<div id="address" style="background-color:#F5DEB3;height:50px;width:150px;float:left;text-align:center;">
+        <b>Address</b>
+    </div>
+    <div id="address_content" style="background-color:#EEEEEE;height:50px;width:550px;float:left;">
+        {{address}}
+	</div>
+    <div id="email" style="background-color:#EEEEEE;height:50px;width:150px;float:left;text-align:center;">
+        <b>Email</b>
+    </div>
+    <div id="email_content" style="background-color:#F5DEB3;height:50px;width:550px;float:left;">
+        {{email}}
+	</div>
+	<div id="number" style="background-color:#F5DEB3;height:50px;width:150px;float:left;text-align:center;">
+        <b>Phone number</b>
+    </div>
+    <div id="number_content" style="background-color:#EEEEEE;height:50px;width:550px;float:left;">
+        {{number}}
+	</div>
+	<div id="footer" style="background-color:#FFA500;clear:both;text-align:center;">{{username}}
+	</div>
+
+</div>
+
+<hr>
+<h2 style="color:red">Update resume here!</h2>
+
+<hr>
+
+<form action="/profileupdate/<username>" method="post">
+
+    <table>
+
+        <tr>
+            <td><label for="txtedu" >Education</label></td>
+	        <td><label for="txtskills" >Skills</label></td>
+			<td><label for="txtvolunteer" >Volunteer</label></td>
+        </tr>
+
+        <tr>
+            <td><input type="text" style="height:50px;width:200px" id="txtedu" name="education" /></td>
+            <td><input type="text" style="height:50px;width:200px" id="txtskills" name="skills" /></td>
+            <td><input type="text" style="height:50px;width:300px" id="txtvolunteer" name="volunteer" /></td>
+        </tr>
+		
+		<tr>
+            <td><label for="txthon" >Honor</label></td>
+	        <td><label for="txtcert" >Certificate</label></td>	
+            <td><label for="txtwork" >Work experience</label></td>
+        </tr>
+
+        <tr>
+            <td><input type="text" style="height:50px;width:200px" id="txthon" name="honor" /></td>
+            <td><input type="text" style="height:50px;width:200px" id="txtcert" name="certificate" /></td>
+            <td><input type="text" style="height:50px;width:300px" id="txtwork" name="work_experience" /></td>
+        </tr>
+		<tr>
+            <td><label for="txtaddress" >Address</label></td>
+	        <td><label for="txtemail" >Email</label></td>	
+            <td><label for="txtnumber" >Phone number</label></td>
+        </tr>
+
+        <tr>
+            <td><input type="text" style="height:30px;width:200px" id="txtaddress" name="address" /></td>
+            <td><input type="text" style="height:30px;width:200px" id="txtemail" name="email" /></td>
+            <td><input type="text" style="height:30px;width:300px" id="txtnumber" name="phonenumber" /></td>
+        </tr>
+		
+		<tr>
+		<p>Note: Email should be in form "abc@abc",example:zy2232@columbia.edu</p>
+		<p>Note: Phone number should be in form "111-111-1111", example:646-709-1626</p>
+		</tr>
+		<tr>
+
+            <td colspan=2>
+
+                <input type="reset" value="reset"/>
+                <input type="submit" value="update"/>
+
+            </td>
+
+        </tr>
+
+    </table>
+
+</form> 
+<table width="700" border="0">
+  <tr>
+  <td colspan="2" style="background-color:#AFEEEE;text-align:center;">copyright © zy2232</td>
+  </tr>
+</table>
+
+
+
+
+
+
+
+</body>
+
+
+</html>
