@@ -268,7 +268,7 @@ def list(username):
     update_time=friends[1]
     friendlist=friends[2]
     a=friendlist.split(',')
-    return render_template("friendlist.html",**locals())
+  return render_template("friendlist.html",**locals())
   
 ### for test  
 @app.route('/test')
