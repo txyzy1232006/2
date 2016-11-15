@@ -657,7 +657,7 @@ def edit(username):
   name=request.form['jobseeker']
   status=request.form['status']
   time=str(request.form['time'])
-  if job='' or name='':
+  if job=='' or name=='':
     return render_template('status_invalid.html')
   cur=g.conn.execute("select j.jobseeker_id from jobseeker as j,person as p where p.user_id=j.user_id and p.username=%s;",name)
   jid=cur.first()[0]
