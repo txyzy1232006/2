@@ -647,7 +647,9 @@ def edit(username):
     if time=='':
       return render_template('status_invalid.html')
     else:
-      if time[4]!='-' or time[7]!='-'or len(time)!=10 or time.count('-')!=2:
+      cursor=g.conn.execute("select %s like '201_-__-__';",time)
+      valid=cursor.first()[0]
+      if not valid:
         return render_template('status_invalid.html')
       else:
         t=time.split('-')
