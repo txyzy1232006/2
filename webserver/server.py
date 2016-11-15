@@ -631,43 +631,44 @@ def edit(username):
   cur=g.conn.execute("select j.jobseeker_id from jobseeker as j,person as p where p.user_id=j.user_id and p.username=%s;",name)
   jid=cur.first()[0]
   #check jobid and name
-  if job==None or name==None:
+  jobid=int(job)
+  cursor=g.conn.execute("select a.job_id, p.username from applyjob as a,person as p,jobseeker as j where a.job_id=%s and a.jobseeker_id=j.jobseeker_id and j.user_id=p.user_id;",jobid)
+  pair=cursor.fetchall()
+  cursor.close()
+  if (jobid, name) not in pair:
     return render_template('status_invalid.html')
-  else:
-    jobid=int(job)
-    cursor=g.conn.execute("select a.job_id, p.username from applyjob as a,person as p,jobseeker as j where a.job_id=%s and a.jobseeker_id=j.jobseeker_id and j.user_id=p.user_id;",jobid)
-    pair=cursor.fetchall()
-    cursor.close()
-    if (jobid, name) not in pair:
-      return render_template('status_invalid.html')
   #check status
   cursor=g.conn.execute("select status from applyjob where jobseeker_id=%s and job_id=%s;",(jid,jobid))
   s=cursor.first()[0]
   if s=='employed':
     return render_template('status_error.html')
   #check time
-  if time[4]!='-' or time[7]!='-'or len(time)!=10 or time.count('-')!=2:
-    return render_template('status_invalid.html')
-  else:
-    t=time.split('-')
-    if not str.isdigit(t[0]) or not str.isdigit(t[1]) or not str.isdigit(t[2]):
+  if status=='interview':
+    if time=='':
       return render_template('status_invalid.html')
     else:
-      if int(t[0])<2016 or int(t[1])>12 or int(t[1])<1 or int(t[2])<1:
+      if time[4]!='-' or time[7]!='-'or len(time)!=10 or time.count('-')!=2:
         return render_template('status_invalid.html')
       else:
-        if int(t[1]) in (1,3,5,7,8,10,12) and int(t[2])>31:
-          return render_template('status_invalid.html')
-        elif int(t[1]) in (4,6,9,11) and int(t[2])>30:
-          return render_template('status_invalid.html')
-        elif int(t[1])==2 and int(t[2])>28:
+        t=time.split('-')
+        if not str.isdigit(t[0]) or not str.isdigit(t[1]) or not str.isdigit(t[2]):
           return render_template('status_invalid.html')
         else:
-          cur=g.conn.execute("select age(timestamp %s);",time)
-          a1=cur.first()[0]
-          cur=g.conn.execute("select extract(day from %s);",a1)
-          if cur.first()[0]>0:
+          if int(t[0])<2016 or int(t[1])>12 or int(t[1])<1 or int(t[2])<1:
             return render_template('status_invalid.html')
+          else:
+            if int(t[1]) in (1,3,5,7,8,10,12) and int(t[2])>31:
+              return render_template('status_invalid.html')
+            elif int(t[1]) in (4,6,9,11) and int(t[2])>30:
+              return render_template('status_invalid.html')
+            elif int(t[1])==2 and int(t[2])>28:
+              return render_template('status_invalid.html')
+            else:
+              cur=g.conn.execute("select age(timestamp %s);",time)
+              a1=cur.first()[0]
+              cur=g.conn.execute("select extract(day from %s);",a1)
+              if cur.first()[0]>0:
+                return render_template('status_invalid.html')
   #check end
   g.conn.execute("update applyjob set status=%s where job_id=%s and jobseeker_id=%s;",(status, jobid,jid))
   if status=='interview' and s=='apply':
