@@ -383,7 +383,7 @@ def add_j(username):
     if salary<1000:
       return render_template('jobpost_invalid.html',name=username)
   #new job_id
-  record1 = g.conn.execute("select max(job_id)+1 from job_posted where employer_id=%s;",eid)
+  record1 = g.conn.execute("select max(job_id) from job_posted where employer_id=%s;",eid)
   jid0=record1.first()[0]
   if jid0==None:
     jid=100*eid+1
@@ -403,7 +403,7 @@ def delete_j(username):
   eid=cursor.first()[0]
   deljid= request.form['deljid']
   g.conn.execute("delete from job_posted where employer_id=%s and job_id=%s;",(eid,deljid))
-  return render_template('jobpost_sus.html',name=username)
+  return render_template('jobpost_sus.html',username=username)
 
 #resume
 @app.route('/jobseeker/<username>/resume')
