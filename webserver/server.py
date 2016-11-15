@@ -372,7 +372,6 @@ def add_j(username):
   cursor=g.conn.execute("select e.employer_id from person as p, employer as e where p.user_id=e.user_id and p.username=%s;",username)
   eid=cursor.first()[0]
   catagory=request.form['type']
-  employer=request.form['employer']
   title=request.form['title']
   location=request.form['location']
   salary1=str(request.form['salary'])
