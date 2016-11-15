@@ -243,7 +243,7 @@ def profileupdate(username):
               cur=g.conn.execute("select age(timestamp %s);",birthday)
               a1=cur.first()[0]
               cur=g.conn.execute("select extract(day from %s);",a1)
-              if cur.first()[0]>0:
+              if cur.first()[0]<0:
                 return render_template("profileinvalid.html",username=username)
     cur=g.conn.execute("select * from profile_update where user_id=%s;",uid)
     profile=cur.first()
