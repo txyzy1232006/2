@@ -547,7 +547,7 @@ def search_j(username):
     where.append(l)
     loc='%'+location+'%'
     m.append(loc)
-  if salary!='':
+  if salary1!='':
     s=' j.salary>%s'
     where.append(s)
     m.append(salary)
