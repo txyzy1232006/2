@@ -522,9 +522,11 @@ def search_j(username):
   title=request.form['title'].lower()
   location=request.form['location'].lower()
   salary1=str(request.form['salary'])
-  if not str.isdigit(salary1):
-    return render_template('jobsearch_invalid.html')
-  salary=int(salary1)
+  if salary1!=None:
+    if not str.isdigit(salary1):
+      return render_template('jobsearch_invalid.html')
+    else:
+      salary=int(salary1)
   where=[]
   m=[]
   c=' and j.catagory=%s'
