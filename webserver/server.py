@@ -240,7 +240,7 @@ def profileupdate(username):
             elif int(t[1])==2 and int(t[2])>28:
               return render_template("profileinvalid.html",username=username)
             else:
-              cur=g.conn.execute("select age(timestamp %s);",time)
+              cur=g.conn.execute("select age(timestamp %s);",birthday)
               a1=cur.first()[0]
               cur=g.conn.execute("select extract(day from %s);",a1)
               if cur.first()[0]>0:
