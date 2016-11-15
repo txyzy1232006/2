@@ -374,6 +374,7 @@ def add_j(username):
   catagory=request.form['type']
   title=request.form['title']
   location=request.form['location']
+  description=request.form['description']
   salary1=str(request.form['salary'])
   if not str.isdigit(salary1):
     return render_template('jobpost_invalid.html',name=username)
