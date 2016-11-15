@@ -384,16 +384,17 @@ def add_j(username):
       return render_template('jobpost_invalid.html',name=username)
   #new job_id
   record1 = g.conn.execute("select max(job_id)+1 from job_posted where employer_id=%s;",eid)
-  jid=record1.first()[0]
-  if jid==None:
+  jid0=record1.first()[0]
+  if jid0==None:
     jid=100*eid+1
   else: 
-    jid=jid+1
+    jid=jid0+1
   time=g.conn.execute("select current_date;")
   updatetime=time.first()[0]
-  cmd = 'INSERT INTO job_posted VALUES (%s, timestamp %s, %s, %s, %s, %s, %s ,%s);';
-  g.conn.execute(text(cmd),(eid, updatetime, jid, title, location, salary, catagory, description));
+  cmd = 'INSERT INTO job_posted VALUES (%s, timestamp %s, %s, %s, %s, %s, %s ,%s);'
+  g.conn.execute(cmd,(eid, updatetime, jid, title, location, salary, catagory, description))
   return render_template('jobpost_sus.html',name=username)
+
            
 #delete job
 @app.route('/employer/<username>/deletejob',methods=['POST'])
