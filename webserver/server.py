@@ -219,8 +219,7 @@ def profileupdate(username):
     selfintro=request.form['Self introduction']
     time=g.conn.execute("select current_date;")
     updatetime=time.first()[0]
-    g.conn.execute("update Profile_update set update_time=timestamp %s where user_id=%s;",(updatetime,uid))
-    #Check update valid
+    #check birthday valid
     if birthday!='':
       cursor=g.conn.execute("select %s like '19__-__-__';",birthday)
       birthvalid=cursor.first()[0]
@@ -246,11 +245,18 @@ def profileupdate(username):
               cur=g.conn.execute("select extract(day from %s);",a1)
               if cur.first()[0]>0:
                 return render_template("profileinvalid.html",username=username)
-      g.conn.execute("update Profile_update set birthday=timestamp %s where user_id=%s;",(birthday,uid))
-    if field!='':
-      g.conn.execute("update Profile_update set field=%s where user_id=%s;",(field,uid))
-    if selfintro!='':
-      g.conn.execute("update Profile_update set self_introduction=%s where user_id=%s;",(field,uid))
+    cur=g.conn.execute("select * from profile_update where user_id=%s;",uid)
+    profile=cur.first()
+    if profile!=None:
+      g.conn.execute("update Profile_update set update_time=timestamp %s where user_id=%s;",(updatetime,uid))
+      if birthday!='':
+        g.conn.execute("update Profile_update set birthday=timestamp %s where user_id=%s;",(birthday,uid))
+      if field!='':
+        g.conn.execute("update Profile_update set field=%s where user_id=%s;",(field,uid))
+      if selfintro!='':
+        g.conn.execute("update Profile_update set self_introduction=%s where user_id=%s;",(selfintro,uid))
+    else:
+      g.conn.execute("insert into Profile_update values (%s,timestamp %s,timestamp %s,'url',%s,%s);",(uid,updatetime,birthday,selfintro,field))
     return render_template("profilesus.html",username=username)
 
 #friendlist
@@ -313,25 +319,28 @@ def add_f(username):
   if newname not in allnames:
     return render_template('frienderror.html',name=username,username=newname)
   else:
+    time=g.conn.execute("select current_date;")
+    updatetime=time.first()[0]
     cursor=g.conn.execute("select user_id from person where username=%s;",username)
     uid=cursor.first()[0]
     cursor=g.conn.execute("select * from friendlist where user_id=%s;",uid)
     friends=cursor.first()
-    friendlist=friends[2]
-    a=friendlist.split(',')
-    if newname in a:
-      return render_template('frienderror1.html',name=username,username=newname)
-    cursor=g.conn.execute("select user_id from person where username=%s;",username)
-    uid=cursor.first()[0]
-    cursor=g.conn.execute("select * from friendlist where user_id=%s;",uid)
-    friends=cursor.first()  
-    friendlist=friends[2]
-    a=friendlist.split(',')
-    a.append(newname)
-    content = ",".join(a)
-    time=g.conn.execute("select current_date;")
-    updatetime=time.first()[0]
-    g.conn.execute("update friendlist set update_time=timestamp %s,username= %s where user_id=%s;",(updatetime,content,uid))
+    if friends!=None:
+      friendlist=friends[2]
+      a=friendlist.split(',')
+      if newname in a:
+        return render_template('frienderror1.html',name=username,username=newname)
+      cursor=g.conn.execute("select user_id from person where username=%s;",username)
+      uid=cursor.first()[0]
+      cursor=g.conn.execute("select * from friendlist where user_id=%s;",uid)
+      friends=cursor.first()  
+      friendlist=friends[2]
+      a=friendlist.split(',')
+      a.append(newname)
+      content = ",".join(a)
+      g.conn.execute("update friendlist set update_time=timestamp %s,username= %s where user_id=%s;",(updatetime,content,uid))
+    else:
+      g.conn.execute("insert into friendlist values (%s,timestamp %s, %s);",(uid, updatetime, newname))
     return render_template('friendsus.html',name=username)
 
 #delete friend
@@ -463,25 +472,10 @@ def resume_update(username):
   address=request.form['address']
   email=request.form['email']
   number=str(request.form['phonenumber'])
-  if education!='':
-    g.conn.execute("update resume_updated set education=%s where jobseeker_id=%s;",(education,jid))
-  if skills!='':
-    g.conn.execute("update resume_updated set skills=%s where jobseeker_id=%s;"%(skills,jid))
-  if volunteer!='':
-    g.conn.execute("update resume_updated set volunteer=%s where jobseeker_id=%s;",(volunteer,jid))
-  if honor!='':
-    g.conn.execute("update resume_updated set honor=%s where jobseeker_id=%s;",(honor,jid))
-  if work_experience!='':
-    g.conn.execute("update resume_updated set work_experience=%s where jobseeker_id=%s;",(work_experience,jid))
-  if certificate!='':
-    g.conn.execute("update resume_updated set certificate=%s where jobseeker_id=%s;",(certificate,jid))
-  if address!='':
-    g.conn.execute("update resume_updated set address=%s where jobseeker_id=%s;",(address,jid))
+  ##check valid
   if email!='':
     if email.count('@')!=1 or email[-1]=='@' or email[0]=='@':
       return render_template('update_resume_error.html',username=username)
-    else:
-      g.conn.execute("update resume_updated set email=%s where jobseeker_id=%s;",(email,jid))
   if number!='':
     if number[3]!='-' or number[7]!='-' or number.count('-')>2 or len(number)!=12:
       return render_template('update_resume_error.html',username=username)
@@ -489,8 +483,32 @@ def resume_update(username):
       n=number.split('-')
       if not str.isdigit(n[0])  or  not str.isdigit(n[1]) or not str.isdigit(n[1]):
         return render_template('update_resume_error.html',username=username)
-      else:
-        g.conn.execute("update resume_updated set phone_number=%s where jobseeker_id=%s;",(number,jid))
+   ##check end
+  cur=g.conn.execute("select * from resume_updated where jobseeker_id=%s;", jid)
+  resume=cur.first()
+  if resume==None:
+    cur.g.conn.execute("select max(resume_id)+1 from resume_updated;")
+    rid=cur.first()[0]
+    g.conn.execute("insert into resume_updated values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);",(rid,jid,education,skills,volunteer,honor,work_experience,certificate,address,email,number))
+  else:
+    if education!='':
+      g.conn.execute("update resume_updated set education=%s where jobseeker_id=%s;",(education,jid))
+    if skills!='':
+      g.conn.execute("update resume_updated set skills=%s where jobseeker_id=%s;"%(skills,jid))
+    if volunteer!='':
+      g.conn.execute("update resume_updated set volunteer=%s where jobseeker_id=%s;",(volunteer,jid))
+    if honor!='':
+      g.conn.execute("update resume_updated set honor=%s where jobseeker_id=%s;",(honor,jid))
+    if work_experience!='':
+      g.conn.execute("update resume_updated set work_experience=%s where jobseeker_id=%s;",(work_experience,jid))
+    if certificate!='':
+      g.conn.execute("update resume_updated set certificate=%s where jobseeker_id=%s;",(certificate,jid))
+    if address!='':
+      g.conn.execute("update resume_updated set address=%s where jobseeker_id=%s;",(address,jid))
+    if email!='':
+      g.conn.execute("update resume_updated set email=%s where jobseeker_id=%s;",(email,jid))
+    if number!='':
+      g.conn.execute("update resume_updated set phone_number=%s where jobseeker_id=%s;",(number,jid))
   return render_template('update_resume_sus.html',username=username)
 
            
@@ -639,6 +657,8 @@ def edit(username):
   name=request.form['jobseeker']
   status=request.form['status']
   time=str(request.form['time'])
+  if job='' or name='':
+    return render_template('status_invalid.html')
   cur=g.conn.execute("select j.jobseeker_id from jobseeker as j,person as p where p.user_id=j.user_id and p.username=%s;",name)
   jid=cur.first()[0]
   #check jobid and name
