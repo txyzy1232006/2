@@ -677,8 +677,11 @@ def edit(username):
     print 1
     cur=g.conn.execute("select employer_id from job_posted where job_id=%s;",jobid)
     eid=cur.first()[0]
+    print eid
     cur=g.conn.execute("select max(interview_id)+1 from interview;")
     iid=cur.first()[0]
+    print iid
+    print iid, time, eid, jid ,jobid
     g.conn.execute("insert into interview values (%s,timestamp %s, %s, %s, %s);",(iid, time, eid, jid, jobid))
   elif status=='interview' and s=='interview':
     print 2
