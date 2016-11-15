@@ -516,12 +516,12 @@ def resume_update(username):
 @app.route('/jobseeker/<username>/search',methods=['POST'])
 def search_j(username):
   cursor=g.conn.execute("select j.jobseeker_id from jobseeker as j, person as p where j.user_id=p.user_id and p.username=%s",username)
-  jid=cursor.first()[0]
-  catagory=request.form['type']
-  employer=request.form['employer']
-  title=request.form['title']
-  location=request.form['location']
-  salary1=str(request.form['salary'])
+  jid=cursor.first()[0].lower()
+  catagory=request.form['type'].lower()
+  employer=request.form['employer'].lower()
+  title=request.form['title'].lower()
+  location=request.form['location'].lower()
+  salary1=str(request.form['salary']).lower()
   if not str.isdigit(salary1):
     return render_template('jobsearch_invalid.html')
   salary=int(salary1)
@@ -531,17 +531,17 @@ def search_j(username):
   where.append(c)
   m.append(catagory)
   if employer!='':
-    e=' e.name like %s'
+    e=' lower(e.name) like %s'
     where.append(e)
     emp='%'+employer+'%'
     m.append(emp)
   if title!='':
-    t=' j.title like %s'
+    t=' lower(j.title) like %s'
     where.append(t)
     tit='%'+title+'%'
     m.append(tit)
   if location!='':
-    l=' j.location like %s'
+    l=' lower(j.location) like %s'
     where.append(l)
     loc='%'+location+'%'
     m.append(loc)
@@ -730,34 +730,44 @@ def edit(username):
 def search_r(username):
   cursor=g.conn.execute("select e.employer_id from employer as e, person as p where e.user_id=p.user_id and p.username=%s",username)
   eid=cursor.first()[0]
-  jobseeker=request.form['jobseeker']
-  skills=request.form['skills']
-  honor=request.form['honor']
-  volunteer=request.form['Volunteer']
-  work_experience=request.form['work_experience']
-  certificate=request.form['Certificate']
+  jobseeker=request.form['jobseeker'].lower()
+  skills=request.form['skills'].lower()
+  honor=request.form['honor'].lower()
+  volunteer=request.form['Volunteer'].lower()
+  work_experience=request.form['work_experience'].lower()
+  certificate=request.form['Certificate'].lower()
   where=[]
   m=[]
   if jobseeker!='':
-    j=' jobseeker like %s'
+    j=' lower(jobseeker) like %s'
     where.append(j)
     jseeker='%'+jobseeker+'%'
     m.append(jseeker)
   if skills!='':
-    s=' skills like %s'
+    s=' lower(skills) like %s'
     where.append(s)
     sk='%'+skills+'%'
     m.append(sk)
   if honor!='':
-    h=' honor like %s'
+    h=' lower(honor) like %s'
     where.append(h)
     hn='%'+honor+'%'
     m.append(hn)
   if volunteer!='':
-    v=' volunteer like %s'
+    v=' lower(volunteer) like %s'
     where.append(v)
     vl='%'+volunteer+'%'
-    m.append(vl)
+    m.append(vl)  
+  if work_experience!='':
+    work=' lower(work_experience) like %s'
+    where.append(work)
+    wo='%'+work_experience+'%'
+    m.append(wo)
+  if certificate!='':
+    cert=' lower(certificate) like %s'
+    where.append(cert)
+    ce='%'+certificate+'%'
+    m.append(ce)
   w=where[0]
   i=1
   while i<len(where):
