@@ -377,11 +377,11 @@ def add_j(username):
   description=request.form['description']
   salary1=str(request.form['salary'])
   if not str.isdigit(salary1):
-    return render_template('jobpost_invalid.html',name=username)
+    return render_template('jobpost_invalid.html',username=username)
   else:
     salary=int(salary1)
     if salary<1000:
-      return render_template('jobpost_invalid.html',name=username)
+      return render_template('jobpost_invalid.html',username=username)
   #new job_id
   record1 = g.conn.execute("select max(job_id) from job_posted where employer_id=%s;",eid)
   jid0=record1.first()[0]
@@ -393,7 +393,7 @@ def add_j(username):
   updatetime=time.first()[0]
   cmd = 'INSERT INTO job_posted VALUES (%s, timestamp %s, %s, %s, %s, %s, %s ,%s);'
   g.conn.execute(cmd,(eid, updatetime, jid, title, location, salary, catagory, description))
-  return render_template('jobpost_sus.html',name=username)
+  return render_template('jobpost_sus.html',username=username)
 
            
 #delete job
