@@ -516,12 +516,12 @@ def resume_update(username):
 @app.route('/jobseeker/<username>/search',methods=['POST'])
 def search_j(username):
   cursor=g.conn.execute("select j.jobseeker_id from jobseeker as j, person as p where j.user_id=p.user_id and p.username=%s",username)
-  jid=cursor.first()[0].lower()
+  jid=cursor.first()[0]
   catagory=request.form['type'].lower()
   employer=request.form['employer'].lower()
   title=request.form['title'].lower()
   location=request.form['location'].lower()
-  salary1=str(request.form['salary']).lower()
+  salary1=str(request.form['salary'])
   if not str.isdigit(salary1):
     return render_template('jobsearch_invalid.html')
   salary=int(salary1)
