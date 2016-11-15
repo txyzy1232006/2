@@ -263,7 +263,7 @@ def list(username):
   if friends==None:
     update_time=''
     friendlist=''
-    a=''
+    a=[]
   else:
     update_time=friends[1]
     friendlist=friends[2]
