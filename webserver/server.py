@@ -270,6 +270,16 @@ def list(username):
     a=friendlist.split(',')
     return render_template("friendlist.html",**locals())
   
+### for test  
+@app.route('/test')
+def test():
+    update_time=''
+    friendlist=''
+    a=['Please update']
+    username='NBCU'
+    return render_template("friendlist.html",**locals())
+    
+  
 #view profile
 @app.route('/viewprofile',methods=['POST'])
 def viewp():
