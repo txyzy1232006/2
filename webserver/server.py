@@ -522,7 +522,7 @@ def search_j(username):
   title=request.form['title'].lower()
   location=request.form['location'].lower()
   salary1=str(request.form['salary'])
-  if salary1!=None:
+  if salary1!='':
     if not str.isdigit(salary1):
       return render_template('jobsearch_invalid.html')
     else:
