@@ -48,19 +48,16 @@ def sign():
   password = request.form['password']
   t=request.form['name']
   record=g.conn.execute('SELECT username FROM person WHERE username = %s',username)
-  print record
   if not record.fetchone():
     return render_template("signinerror.html")
     record.close()
   else:
     record=g.conn.execute('SELECT password FROM person WHERE username = %s',username)
-    print record
     p= record.fetchone()
     record.close()
     if p[0] == password:
       if t =='employer':
         cur=g.conn.execute("select e.* from employer as e, person as p  where e.user_id=p.user_id and p.username=%s;",username)
-        print cur
         a=cur.first()
         if a==None:
           return render_template("signinerror.html")
@@ -68,7 +65,6 @@ def sign():
           return redirect('/employer/%s'%username)
       else:
         cur=g.conn.execute("select j.* from jobseeker as j, person as p  where j.user_id=p.user_id and p.username=%s;",username)
-        print cur
         a=cur.first()
         if a==None:
           return render_template("signinerror.html")
@@ -181,7 +177,6 @@ def profile_j(username):
     field=profile[5]
   cursor=g.conn.execute("select * from friendlist where user_id=%s;",uid)
   friends=cursor.first()
-  print friends
   if friends==None:
     update_time_f=''
     friendlist=''
@@ -707,20 +702,14 @@ def edit(username):
   #check end
   g.conn.execute("update applyjob set status=%s where job_id=%s and jobseeker_id=%s;",(status, jobid,jid))
   if status=='interview' and s=='apply':
-    print 1
     cur=g.conn.execute("select employer_id from job_posted where job_id=%s;",jobid)
     eid=cur.first()[0]
-    print eid
     cur=g.conn.execute("select max(interview_id)+1 from interview;")
     iid=cur.first()[0]
-    print iid
-    print iid, time, eid, jid ,jobid
     g.conn.execute("insert into interview values (%s,timestamp %s, %s, %s, %s);",(iid, time, eid, jid, jobid))
   elif status=='interview' and s=='interview':
-    print 2
     g.conn.execute("update interview set time=timestamp %s where jobseeker_id=%s and job_id=%s;",(time,jid,jobid))
   elif status=='employed' and s=='interview':
-    print 3
     g.conn.execute("delete from interview where jobseeker_id=%s and job_id=%s;", (jid,jobid))
   return render_template('status_sus.html')
     
