@@ -702,7 +702,7 @@ def edit(username):
               cur=g.conn.execute("select age(timestamp %s);",time)
               a1=cur.first()[0]
               cur=g.conn.execute("select extract(day from %s);",a1)
-              if cur.first()[0]<0:
+              if cur.first()[0]>0:
                 return render_template('status_invalid.html')
   #check end
   g.conn.execute("update applyjob set status=%s where job_id=%s and jobseeker_id=%s;",(status, jobid,jid))
